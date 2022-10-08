@@ -19,7 +19,6 @@ class Location(Base):
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now())
     reviewed_by = Column(Integer, ForeignKey('user.id'))
-    # added_by = Column() Foreign key to admin?
     status = Column(Integer, default=1)
 
     address = Column(String, nullable=False, unique=True)
