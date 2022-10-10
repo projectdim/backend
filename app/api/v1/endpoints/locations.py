@@ -10,13 +10,11 @@ from app import schemas, models
 from app.crud import crud_location as crud
 from app.crud import crud_changelogs as logs_crud
 
-
 router = APIRouter()
 
 
 @router.post('/create')
 async def create_location(location: schemas.LocationCreate, db: Session = Depends(get_db)) -> Any:
-
     # existing_location = crud.get_location_by_index(db, location.index)
     #
     # if existing_location:
@@ -32,7 +30,6 @@ async def create_location(location: schemas.LocationCreate, db: Session = Depend
 
 @router.get('/search')
 async def get_location(lat: float, lng: float, db: Session = Depends(get_db)) -> Any:
-
     location = crud.get_location_by_coordinates(db, lat, lng)
 
     if not location:
@@ -43,7 +40,6 @@ async def get_location(lat: float, lng: float, db: Session = Depends(get_db)) ->
 
 @router.post('/cord_search')
 async def get_locations_by_coordinates(coordinates: schemas.LocationSearch, db: Session = Depends(get_db)) -> Any:
-
     locations = crud.get_locations_in_range(db, coordinates.lat, coordinates.lng)
 
     return [location.to_json() for location in locations]
@@ -51,7 +47,6 @@ async def get_locations_by_coordinates(coordinates: schemas.LocationSearch, db: 
 
 @router.get('/changelogs')
 async def get_location_changelogs(location_id: int, db: Session = Depends(get_db)) -> Any:
-
     logs = logs_crud.get_changelogs(db, location_id)
 
     return logs
@@ -59,7 +54,6 @@ async def get_location_changelogs(location_id: int, db: Session = Depends(get_db
 
 @router.post('/request-info')
 async def request_location_review(location: schemas.LocationCreate, db: Session = Depends(get_db)) -> Any:
-
     existing_location = crud.get_location_by_coordinates(db, location.lat, location.lng)
 
     if existing_location:
@@ -73,13 +67,37 @@ async def request_location_review(location: schemas.LocationCreate, db: Session 
     return location_to_review.to_json()
 
 
-@router.get('/location-requests',)
+@router.get('/location-requests')
 async def get_requested_locations(page: int = 1,
                                   limit: int = 20,
                                   db: Session = Depends(get_db),
                                   current_user: models.User = Security(get_current_active_user,
                                                                        scopes=['locations:view'])) -> Any:
-
     locations = crud.get_locations_awaiting_reports(db, limit, page - 1)
 
     return [location.to_json() for location in locations]
+
+
+# @router.put('/submit-report')
+# async def submit_location_report(report: schemas.LocationReports, db: Session = Depends(get_db)):
+#     pass
+
+
+@router.put('/submit-report')
+async def submit_location_report(location_id: int,
+                                 reports: schemas.LocationReports,
+                                 db: Session = Depends(get_db)):
+
+    location = crud.submit_location_reports(db,
+                                            location_id=location_id,
+                                            building_condition=reports.building_condition,
+                                            electricity=reports.electricity,
+                                            car_entrance=reports.car_entrance,
+                                            water=reports.water,
+                                            fuel_station=reports.fuel_station,
+                                            hospital=reports.hospital)
+
+    if not location:
+        raise HTTPException(status_code=400, detail='Cannot find the requested location')
+
+    return location.to_json()

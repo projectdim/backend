@@ -131,3 +131,31 @@ def get_locations_awaiting_reports(db: Session, limit: int = 20, skip: int = 0) 
         .order_by(desc(Location.created_at))\
         .limit(limit)\
         .offset(skip * limit)
+
+
+def submit_location_reports(db: Session,
+                            location_id: int,
+                            building_condition: str,
+                            electricity: str,
+                            car_entrance: str,
+                            water: str,
+                            fuel_station: str,
+                            hospital: str) -> Location:
+    location = db.query(Location).get(location_id)
+    if not location:
+        return None
+
+    reports = {
+        "buildingCondition": building_condition,
+        "electricity": electricity,
+        "carEntrance": car_entrance,
+        "water": water,
+        "fuelStation": fuel_station,
+        "hospital": hospital,
+    }
+
+    location.reports = reports
+
+    db.commit()
+    db.refresh(location)
+    return location

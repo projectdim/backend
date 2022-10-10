@@ -7,8 +7,6 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from geoalchemy2 import alembic_helpers
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -84,8 +82,8 @@ def run_migrations_online() -> None:
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata, compare_type=True,
-            process_revision_directives=alembic_helpers.writer,
-            render_item=alembic_helpers.render_item
+            # process_revision_directives=alembic_helpers.writer,
+            # render_item=alembic_helpers.render_item
         )
 
         with context.begin_transaction():
