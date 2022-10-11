@@ -31,7 +31,7 @@ def create(db: Session, *, obj_in: UserCreate) -> User:
 
 
 def update_info(db: Session, *, obj_in: UserBase, user_email: str) -> User:
-    user = get(db, user_email=user_email)
+    user = get_by_email(db, email=user_email)
 
     user.email = obj_in.email
     user.full_name = obj_in.full_name
