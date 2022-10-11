@@ -37,6 +37,7 @@ class Location(Base):
             "address": self.address,
             "index": self.index,
             "city": self.city,
+            "status": self.status,
             "country": self.country,
             "position": {
               "lat": self.lat, "lng": self.lng

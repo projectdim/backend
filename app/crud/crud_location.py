@@ -7,22 +7,13 @@ from sqlalchemy import desc
 
 from app.utils.time_generator import random_date
 from app.models.changelog import ChangeLog
+from app.crud.crud_changelogs import create_changelog
 from app.models.location import Location
-from app.schemas.location import LocationCreate, LocationUpdate
+from app.schemas.location import LocationCreate, LocationReports
+from app.utils.populate_db import populate_reports
 
 
 def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
-
-    reports = {
-        "buildingCondition": "Неушкоджена",
-        "electricity": "Переривчаста",
-        "carEntrance": random.choice(["Доступне", "Недоступне"]),
-        "water": random.choice(['Стабільна', "Нестабільна"]),
-        "fuelStation": "відчинено",
-        "fuelStationDistance": random.uniform(0.1, 9.8),
-        "hospital": random.choice(['зачинено', 'відчинено']),
-        "hospitalDistance": random.uniform(0.1, 9.9)
-    }
 
     try:
         db_obj = Location(
@@ -32,7 +23,7 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
             lng=obj_in.lng,
             country=obj_in.country,
             city=obj_in.city,
-            reports=reports
+            reports=populate_reports()
         )
 
         db.add(db_obj)
@@ -133,29 +124,38 @@ def get_locations_awaiting_reports(db: Session, limit: int = 20, skip: int = 0) 
         .offset(skip * limit)
 
 
-def submit_location_reports(db: Session,
-                            location_id: int,
-                            building_condition: str,
-                            electricity: str,
-                            car_entrance: str,
-                            water: str,
-                            fuel_station: str,
-                            hospital: str) -> Location:
-    location = db.query(Location).get(location_id)
+def submit_location_reports(db: Session, *, obj_in: LocationReports) -> Any:
+
+    location = db.query(Location).get(obj_in.location_id)
+
     if not location:
         return None
 
     reports = {
-        "buildingCondition": building_condition,
-        "electricity": electricity,
-        "carEntrance": car_entrance,
-        "water": water,
-        "fuelStation": fuel_station,
-        "hospital": hospital,
+        "buildingCondition": obj_in.building_condition,
+        "electricity": obj_in.electricity,
+        "carEntrance": obj_in.car_entrance,
+        "water": obj_in.water,
+        "fuelStation": obj_in.fuel_station,
+        "hospital": obj_in.hospital,
     }
+
+    old_reports = location.reports
+    new_reports = reports
 
     location.reports = reports
 
+    # TODO confirmation for this?
+    location.status = 3
+
     db.commit()
     db.refresh(location)
+
+    changelog = create_changelog(db,
+                                 location_id=location.id,
+                                 old_object=old_reports,
+                                 new_object=new_reports)
+
+    # TODO rollback strategy if no changelog was created
+
     return location

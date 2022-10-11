@@ -90,12 +90,7 @@ async def submit_location_report(location_id: int,
 
     location = crud.submit_location_reports(db,
                                             location_id=location_id,
-                                            building_condition=reports.building_condition,
-                                            electricity=reports.electricity,
-                                            car_entrance=reports.car_entrance,
-                                            water=reports.water,
-                                            fuel_station=reports.fuel_station,
-                                            hospital=reports.hospital)
+                                            obj_in=reports)
 
     if not location:
         raise HTTPException(status_code=400, detail='Cannot find the requested location')

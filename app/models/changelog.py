@@ -16,5 +16,4 @@ class ChangeLog(Base):
 
     old_flags = Column(JSONB, nullable=True)
     new_flags = Column(JSONB, nullable=True)
-    media_url = Column(String, nullable=True)
 
