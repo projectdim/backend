@@ -30,49 +30,52 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         db.commit()
         db.refresh(db_obj)
 
-        return_obj = db.query(Location).filter(Location.id == db_obj.id).first()
-        random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
-                                                 '%m/%d/%Y %I:%M %p')
+        for i in range(3):
+            submit_location_reports(db, obj_in=LocationReports(**populate_reports()))
 
-        db_changelog = ChangeLog(
-            created_at=random_time,
-            location_id=return_obj.id,
-            action_type=1,
-            old_flags={"buildingCondition": "Пошкоджена"},
-            new_flags={"buildingCondition": "Неушкоджена"}
-        )
-        db.add(db_changelog)
-        db.commit()
-        db.refresh(db_changelog)
+        # return_obj = db.query(Location).filter(Location.id == db_obj.id).first()
+        # random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
+        #                                          '%m/%d/%Y %I:%M %p')
+        #
+        # db_changelog = ChangeLog(
+        #     created_at=random_time,
+        #     location_id=return_obj.id,
+        #     action_type=1,
+        #     old_flags={"buildingCondition": "Пошкоджена"},
+        #     new_flags={"buildingCondition": "Неушкоджена"}
+        # )
+        # db.add(db_changelog)
+        # db.commit()
+        # db.refresh(db_changelog)
+        #
+        # random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
+        #                                          '%m/%d/%Y %I:%M %p')
+        #
+        # db_changelog = ChangeLog(
+        #     created_at=random_time,
+        #     location_id=return_obj.id,
+        #     action_type=1,
+        #     old_flags={"electricity": "Переривчаста", "fuelStation": "зачинено"},
+        #     new_flags={"electricity": "Стабільна", "fuelStation": "відчинено"}
+        # )
+        # db.add(db_changelog)
+        # db.commit()
+        # db.refresh(db_changelog)
+        #
+        # random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
+        #                                          '%m/%d/%Y %I:%M %p')
+        #
+        # db_changelog = ChangeLog(
+        #     created_at=random_time,
+        #     location_id=return_obj.id,
+        #     action_type=2,
+        #     media_url="http://static.prsa.pl/images/22f26b47-af71-4daa-a669-07f10bc23810.jpg"
+        # )
+        # db.add(db_changelog)
+        # db.commit()
+        # db.refresh(db_changelog)
 
-        random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
-                                                 '%m/%d/%Y %I:%M %p')
-
-        db_changelog = ChangeLog(
-            created_at=random_time,
-            location_id=return_obj.id,
-            action_type=1,
-            old_flags={"electricity": "Переривчаста", "fuelStation": "зачинено"},
-            new_flags={"electricity": "Стабільна", "fuelStation": "відчинено"}
-        )
-        db.add(db_changelog)
-        db.commit()
-        db.refresh(db_changelog)
-
-        random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
-                                                 '%m/%d/%Y %I:%M %p')
-
-        db_changelog = ChangeLog(
-            created_at=random_time,
-            location_id=return_obj.id,
-            action_type=2,
-            media_url="http://static.prsa.pl/images/22f26b47-af71-4daa-a669-07f10bc23810.jpg"
-        )
-        db.add(db_changelog)
-        db.commit()
-        db.refresh(db_changelog)
-
-        return return_obj
+        return db.query(Location).get(db_obj.id)
 
     except Exception as e:
         print(e)
@@ -113,8 +116,8 @@ def get_location_by_coordinates(db: Session, lat: float, lng: float) -> Location
 def get_locations_in_range(db: Session, lat: dict, lng: dict) -> List[Location]:
     return db.query(Location)\
         .filter(Location.lat.between(lat["lo"], lat["hi"]),
-                Location.lng.between(lng["lo"], lng["hi"]),
-                Location.status == 3).all()
+                Location.lng.between(lng["lo"], lng["hi"])).all()
+                #Location.status === 3
 
 
 def get_locations_awaiting_reports(db: Session, limit: int = 20, skip: int = 0) -> List[Location]:

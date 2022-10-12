@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.sql import func
 
 from app.db.base_class import Base
 
@@ -16,8 +17,8 @@ class Location(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now())
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now())
     reviewed_by = Column(Integer, ForeignKey('user.id'))
     status = Column(Integer, default=1)
 

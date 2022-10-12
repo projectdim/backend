@@ -3,7 +3,7 @@ import random
 from sqlalchemy.orm import Session
 
 from app.schemas import enums
-# from app.crud.crud_location import submit_location_reports
+from app.utils.time_generator import random_date
 from app import models
 
 
@@ -42,5 +42,7 @@ def populate_reports():
     }
 
 
-def populate_changelogs(db: Session, location: models.Location):
-    pass
+# def populate_changelogs():
+#     return {
+#         "time": ran
+#     }

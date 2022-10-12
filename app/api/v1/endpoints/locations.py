@@ -84,13 +84,10 @@ async def get_requested_locations(page: int = 1,
 
 
 @router.put('/submit-report')
-async def submit_location_report(location_id: int,
-                                 reports: schemas.LocationReports,
+async def submit_location_report(reports: schemas.LocationReports,
                                  db: Session = Depends(get_db)):
 
-    location = crud.submit_location_reports(db,
-                                            location_id=location_id,
-                                            obj_in=reports)
+    location = crud.submit_location_reports(db, obj_in=reports)
 
     if not location:
         raise HTTPException(status_code=400, detail='Cannot find the requested location')

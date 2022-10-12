@@ -2,6 +2,7 @@ from app.db.base_class import Base
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import JSONB
 
 role_permissions = {
@@ -14,7 +15,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    created_at = Column(DateTime, default=datetime.now())
+    created_at = Column(DateTime, default=func.now())
 
     username = Column(String)
     full_name = Column(String, index=True)
