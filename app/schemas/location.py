@@ -6,6 +6,8 @@ from pydantic import BaseModel
 
 from app.schemas import report
 
+# TODO LocationOut class with typed dict position (check to_json location method)
+
 
 class LocationBase(BaseModel):
     created_at: Optional[datetime] = None

@@ -5,3 +5,4 @@ from app.models.reportoptions import ReportOption
 from app.models.changelog import ChangeLog
 from app.models.user import User
 from app.models.sessionhistory import SessionHistory
+from app.models.organization import Organization

@@ -21,8 +21,17 @@ class UserPasswordUpdate(BaseModel):
 
 class UserOut(UserBase):
     id: int
+    organization: Optional[str]
     email_confirmed: bool
     role: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserRepresentation(UserBase):
+    id: int
+    organization: Optional[str]
 
     class Config:
         orm_mode = True
