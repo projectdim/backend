@@ -10,7 +10,7 @@ class OrganizationBase(BaseModel):
 
 class OrganizationOut(OrganizationBase):
     id: int
-    leader: Optional[UserRepresentation]
+    # leader: Optional[UserRepresentation]
     participants: Optional[List[UserRepresentation]]
 
     class Config:

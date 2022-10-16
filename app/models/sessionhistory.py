@@ -13,7 +13,7 @@ class SessionHistory(Base):
     created_at = Column(DateTime, default=func.now())
     expires_at = Column(DateTime, default=func.now() + timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
 
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 
     # Is this always unique??
     access_token = Column(String, nullable=False, unique=True)

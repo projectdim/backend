@@ -1,4 +1,5 @@
 from typing import Generator
+from datetime import datetime
 
 from fastapi import Depends, HTTPException, status, Security
 from fastapi.security.oauth2 import OAuth2PasswordBearer
@@ -31,8 +32,6 @@ def get_current_user(security_scopes: SecurityScopes,
                      db: Session = Depends(get_db),
                      token: str = Depends(reusable_oauth2)) -> models.User:
 
-    print(security_scopes.scopes)
-
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -48,7 +47,6 @@ def get_current_user(security_scopes: SecurityScopes,
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
-        print(token, payload)
         token_data = schemas.TokenBase(**payload)
 
     except (jwt.JWTError, ValidationError) as e:

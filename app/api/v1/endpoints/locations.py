@@ -1,5 +1,4 @@
-from typing import Any
-import json
+from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, Body, Security
 
@@ -15,10 +14,6 @@ router = APIRouter()
 
 @router.post('/create')
 async def create_location(location: schemas.LocationCreate, db: Session = Depends(get_db)) -> Any:
-    # existing_location = crud.get_location_by_index(db, location.index)
-    #
-    # if existing_location:
-    #     raise HTTPException(status_code=400, detail="Location already exists.")
 
     new_location = crud.create_location(db, obj_in=location)
 
@@ -67,7 +62,14 @@ async def request_location_review(location: schemas.LocationCreate, db: Session 
     return location_to_review.to_json()
 
 
-@router.get('/location-requests')
+@router.get('/pending-count')
+async def get_pending_locations_count(db: Session = Depends(get_db),
+                                      current_user=Security(get_current_active_user, scopes=['locations:view'])) -> Any:
+
+    return {"count": crud.get_locations_awaiting_reports_count(db)}
+
+
+@router.get('/location-requests', response_model=List[schemas.LocationOut])
 async def get_requested_locations(page: int = 1,
                                   limit: int = 20,
                                   db: Session = Depends(get_db),
@@ -78,16 +80,47 @@ async def get_requested_locations(page: int = 1,
     return [location.to_json() for location in locations]
 
 
-# @router.put('/submit-report')
-# async def submit_location_report(report: schemas.LocationReports, db: Session = Depends(get_db)):
-#     pass
+@router.put('/assign-location')
+async def assign_location_report(location_id: int,
+                                 db: Session = Depends(get_db),
+                                 current_user: models.User = Security(get_current_active_user,
+                                                                      scopes=['locations:edit'])) -> Any:
+
+    location = crud.assign_report(db, current_user.id, location_id)
+    if not location:
+        raise HTTPException(status_code=400, detail="Location is already assigned")
+
+    return location.to_json()
+
+
+@router.put('/remove-assignment')
+async def remove_report_assignment(location_id: int,
+                                   db: Session = Depends(get_db),
+                                   current_user: models.User = Security(get_current_active_user,
+                                                                        scopes=['locations:edit'])) -> Any:
+    location = crud.remove_assignment(db, location_id, current_user.id)
+    if not location:
+        raise HTTPException(status_code=400, detail="This location was already dismissed or does not belong to you")
+
+    return location.to_json()
+
+
+@router.get('/assigned-locations', response_model=List[schemas.LocationAdmin])
+async def get_user_assigned_locations(db: Session = Depends(get_db),
+                                      current_user: models.User = Security(get_current_active_user,
+                                                                           scopes=['locations:view'])) -> Any:
+
+    locations = crud.get_user_assigned_locations(db, current_user.id)
+    return [location.to_json() for location in locations]
 
 
 @router.put('/submit-report')
 async def submit_location_report(reports: schemas.LocationReports,
-                                 db: Session = Depends(get_db)):
+                                 db: Session = Depends(get_db),
+                                 current_user: models.User = Security(get_current_active_user,
+                                                                      scopes=['locations:edit'])) -> Any:
 
-    location = crud.submit_location_reports(db, obj_in=reports)
+    location = crud.submit_location_reports(db, obj_in=reports, user_id=current_user.id)
 
     if not location:
         raise HTTPException(status_code=400, detail='Cannot find the requested location')

@@ -1,10 +1,12 @@
 from typing import Optional
+from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from app.core.security import get_password_hash, verify_password
+from app.core.security import get_password_hash, verify_password, create_access_token
 from app.models.user import User, role_permissions
-from app.schemas.user import UserCreate, UserBase
+from app.schemas.user import UserCreate, UserBase, UserInvite
+from app.core.config import settings
 
 
 def get_by_email(db: Session, *, email: str) -> Optional[User]:
@@ -22,12 +24,50 @@ def create(db: Session, *, obj_in: UserCreate) -> User:
         hashed_password=get_password_hash(obj_in.password),
         full_name=obj_in.full_name,
         role="aid_worker",
+        organization=1,
         permissions=role_permissions["aid_worker"]
     )
     db.add(db_obj)
     db.commit()
     db.refresh(db_obj)
     return db_obj
+
+
+def create_invite(db: Session, *, obj_in: UserInvite) -> Optional[User]:
+    db_obj = User(
+        email=obj_in.email,
+        organization=obj_in.organization,
+        is_active=False,
+        role="aid worker",
+        permissions=role_permissions["aid_worker"],
+        registration_token=create_access_token(subject=obj_in.email, scopes=['users:confirm']),
+        registration_token_expires=datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+
+def confirm_registration(db: Session, *, access_token: str, obj_in: UserCreate) -> Optional[User]:
+    invited_user = db.query(User).filter(User.registration_token == access_token).first()
+
+    # TODO CHECK IF TOKEN NOT EXPIRED
+    if not invited_user:
+        return None
+
+    invited_user.registration_token = None
+    invited_user.registration_token_expires = None
+    invited_user.full_name = obj_in.full_name
+    invited_user.username = obj_in.username
+    invited_user.hashed_password = get_password_hash(obj_in.password)
+    invited_user.is_active = True
+    invited_user.email_confirmed = True
+
+    db.commit()
+    db.refresh(invited_user)
+    return invited_user
 
 
 def update_info(db: Session, *, obj_in: UserBase, user_email: str) -> User:

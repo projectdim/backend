@@ -6,6 +6,8 @@ from app.api.v1.api import api_router
 
 app = FastAPI()
 
+# TODO CHECK ALL ROUTES SECURITY DEPENDENCIES
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

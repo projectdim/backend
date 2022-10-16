@@ -1,12 +1,9 @@
-import random
-import datetime
-from typing import List, Any
+from typing import List, Any, Optional
+from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
-from app.utils.time_generator import random_date
-from app.models.changelog import ChangeLog
 from app.crud.crud_changelogs import create_changelog
 from app.models.location import Location
 from app.schemas.location import LocationCreate, LocationReports
@@ -120,14 +117,50 @@ def get_locations_in_range(db: Session, lat: dict, lng: dict) -> List[Location]:
                 #Location.status === 3
 
 
+def get_locations_awaiting_reports_count(db: Session) -> int:
+    return db.query(Location).filter(Location.status == 1, Location.reported_by == None).count()
+
+
 def get_locations_awaiting_reports(db: Session, limit: int = 20, skip: int = 0) -> List[Location]:
-    return db.query(Location).filter(Location.status == 1)\
+    return db.query(Location).filter(Location.status == 1, Location.reported_by == None)\
         .order_by(desc(Location.created_at))\
         .limit(limit)\
-        .offset(skip * limit)
+        .offset(skip * limit).all()
 
 
-def submit_location_reports(db: Session, *, obj_in: LocationReports) -> Any:
+def assign_report(db: Session, user_id: int, location_id: int) -> Optional[Location]:
+    location = db.query(Location).get(location_id)
+
+    if location.reported_by:
+        return None
+
+    location.reported_by = user_id
+    location.report_expires = datetime.now() + timedelta(days=1)
+
+    db.commit()
+    db.refresh(location)
+    return location
+
+
+def remove_assignment(db: Session, location_id: int, user_id: int) -> Optional[Location]:
+    location = db.query(Location).get(location_id)
+
+    if location.reported_by != user_id or not location.reported_by:
+        return None
+
+    location.reported_by = None
+    location.report_expires = None
+
+    db.commit()
+    db.refresh(location)
+    return location
+
+
+def get_user_assigned_locations(db: Session, user_id: int) -> List[Location]:
+    return db.query(Location).filter(Location.reported_by == user_id, Location.status == 1).all()
+
+
+def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: int) -> Any:
 
     location = db.query(Location).get(obj_in.location_id)
 
@@ -135,11 +168,11 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports) -> Any:
         return None
 
     reports = {
-        "buildingCondition": obj_in.building_condition,
+        "buildingCondition": obj_in.buildingCondition,
         "electricity": obj_in.electricity,
-        "carEntrance": obj_in.car_entrance,
+        "carEntrance": obj_in.carEntrance,
         "water": obj_in.water,
-        "fuelStation": obj_in.fuel_station,
+        "fuelStation": obj_in.fuelStation,
         "hospital": obj_in.hospital,
     }
 
@@ -150,6 +183,8 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports) -> Any:
 
     # TODO confirmation for this?
     location.status = 3
+    location.report_expires = None
+    location.reported_by = user_id
 
     db.commit()
     db.refresh(location)

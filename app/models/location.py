@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, Interval
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
+from sqlalchemy.sql.expression import bindparam
 
 from app.db.base_class import Base
 
@@ -19,7 +20,9 @@ class Location(Base):
 
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now())
-    reviewed_by = Column(Integer, ForeignKey('user.id'))
+
+    report_expires = Column(DateTime)
+    reported_by = Column(Integer, ForeignKey('user.id', ondelete="SET NULL"))
     status = Column(Integer, default=1)
 
     address = Column(String, nullable=False, unique=True)
@@ -43,6 +46,8 @@ class Location(Base):
             "position": {
               "lat": self.lat, "lng": self.lng
             },
+            "reported_by": self.reported_by,
+            "report_expires": self.report_expires,
             "reports": self.reports
         }
 

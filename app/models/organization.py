@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.db.base_class import Base
+from app.models.user import User
 
 
 class Organization(Base):
@@ -12,5 +13,5 @@ class Organization(Base):
     created_at = Column(DateTime, default=func.now())
 
     name = Column(String, nullable=False, unique=True)
-    leader = Column(Integer, ForeignKey("user.id"))
-    participants = relationship("User", back_populates="organization")
+    # leader = Column(Integer, ForeignKey("user.id"))
+    participants = relationship("User")

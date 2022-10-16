@@ -29,6 +29,33 @@ async def register_user(user: schemas.UserCreate, db: Session = Depends(get_db))
     return new_user
 
 
+@router.post('/invite')
+async def generate_invite_link(user: schemas.UserInvite, db: Session = Depends(get_db)) -> Any:
+    existing_user = crud.get_by_email(db, email=user.email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User exists")
+
+    new_user = crud.create_invite(db, obj_in=user)
+
+    if not new_user:
+        raise HTTPException(status_code=500, detail="Cannot connect to db, please try again later")
+
+    # TODO EMAIL MODULE
+
+    return new_user
+
+
+@router.post('/confirm-registration', response_model=schemas.UserOut)
+async def confirm_user_registration(access_token: str, user: schemas.UserCreate, db: Session = Depends(get_db)) -> Any:
+
+    new_user = crud.confirm_registration(db, access_token=access_token, obj_in=user)
+
+    if not new_user:
+        raise HTTPException(status_code=400, detail="Cannot create a new user. Please ask for invite link once more")
+
+    return new_user
+
+
 @router.get('/me', response_model=schemas.UserOut)
 async def get_me(current_user: models.User = Depends(get_current_active_user)) -> Any:
     return current_user

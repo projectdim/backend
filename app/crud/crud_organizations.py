@@ -30,4 +30,4 @@ def get_by_name(db: Session, name: str) -> Optional[Organization]:
 def get_organizations_list(db: Session, limit: int = 20, skip: int = 0) -> List[Organization]:
     return db.query(Organization).order_by(desc(Organization.created_at))\
         .limit(limit)\
-        .offset(skip * limit)
+        .offset(skip * limit).all()

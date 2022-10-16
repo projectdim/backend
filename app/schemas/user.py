@@ -11,7 +11,13 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     email: EmailStr
+    organization: Optional[int]
     password: str
+
+
+class UserInvite(BaseModel):
+    email: EmailStr
+    organization: int
 
 
 class UserPasswordUpdate(BaseModel):
