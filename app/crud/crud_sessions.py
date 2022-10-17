@@ -8,7 +8,7 @@ from app.models.sessionhistory import SessionHistory
 def create(db: Session,
            *,
            user_id: int,
-           access_token: int,
+           access_token: str,
            user_agent: str = None,
            user_ip: str = None):
 

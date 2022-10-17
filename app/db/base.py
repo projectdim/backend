@@ -6,3 +6,4 @@ from app.models.changelog import ChangeLog
 from app.models.user import User
 from app.models.sessionhistory import SessionHistory
 from app.models.organization import Organization
+from app.models.geospatial_index import GeospatialIndex

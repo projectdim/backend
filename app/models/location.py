@@ -1,9 +1,6 @@
-from datetime import datetime, timedelta
-
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, Interval
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
-from sqlalchemy.sql.expression import bindparam
 
 from app.db.base_class import Base
 

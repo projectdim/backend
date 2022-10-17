@@ -13,10 +13,9 @@ from app.core import security
 from app.core.config import settings
 from app.db.session import SessionLocal
 
-
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login/token",
                                        scopes={"me": "Read current user information",
-                                               "locations": "Get info about locations"},)
+                                               "locations": "Get info about locations"}, )
 
 
 def get_db() -> Generator:
@@ -31,7 +30,6 @@ def get_db() -> Generator:
 def get_current_user(security_scopes: SecurityScopes,
                      db: Session = Depends(get_db),
                      token: str = Depends(reusable_oauth2)) -> models.User:
-
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -57,11 +55,10 @@ def get_current_user(security_scopes: SecurityScopes,
     if not user:
         raise credentials_exception
 
-    session = crud.crud_sessions.get_by_access_token(db, user_id=user.id, access_token=token)
-    if not session.is_active or not session:
-        raise credentials_exception
-
-    print(token_data.scopes)
+    # TODO
+    # session = crud.crud_sessions.get_by_access_token(db, user_id=user.id, access_token=token)
+    # if not session.is_active or not session:
+    #     raise credentials_exception
 
     for scope in security_scopes.scopes:
         if scope not in token_data.scopes:
@@ -75,7 +72,6 @@ def get_current_user(security_scopes: SecurityScopes,
 
 
 def get_current_active_user(current_user: models.User = Security(get_current_user, scopes=["users:me"])) -> models.User:
-
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="User is not active")
 

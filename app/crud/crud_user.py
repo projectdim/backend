@@ -17,15 +17,15 @@ def get(db: Session, *, user_id: int) -> Optional[User]:
     return db.query(User).get(user_id)
 
 
-def create(db: Session, *, obj_in: UserCreate) -> User:
+def create(db: Session, *, obj_in: UserCreate, role: str) -> User:
     db_obj = User(
         email=obj_in.email,
         username=obj_in.username,
         hashed_password=get_password_hash(obj_in.password),
         full_name=obj_in.full_name,
-        role="aid_worker",
+        role=role,
         organization=1,
-        permissions=role_permissions["aid_worker"]
+        permissions=role_permissions[role]
     )
     db.add(db_obj)
     db.commit()
@@ -104,3 +104,12 @@ def authenticate(db: Session, *, email: str, password: str) -> Optional[User]:
     if not verify_password(password, user.hashed_password):
         return None
     return user
+
+
+def delete_user(db: Session, user_id: int) -> None:
+
+    user = get(db, user_id)
+
+    db.delete(user)
+    db.commit()
+    return get(db, user_id)

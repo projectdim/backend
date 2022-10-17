@@ -1,5 +1,4 @@
-from typing import Any, List
-from datetime import timedelta
+from typing import List
 
 from fastapi import Depends, HTTPException, APIRouter
 
@@ -16,6 +15,7 @@ router = APIRouter()
 @router.get('/active', response_model=List[schemas.UserSession])
 async def get_active_sessions(current_user: models.User = Depends(get_current_active_user),
                               db: Session = Depends(get_db)):
+
     sessions = crud.get_user_active_sessions(db, user_id=current_user.id)
 
     return sessions

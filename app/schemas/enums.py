@@ -16,28 +16,28 @@ class BuildingConditionEnum(BasicEnum):
 class ElectricityEnum(BasicEnum):
     stable = "Стабільна"
     intermittent = "Переривчаста"
-    no_data = "Відсутня"
+    no_data = "Невідомо"
 
 
 class CarEntranceEnum(BasicEnum):
     accessible = "Доступне"
     inaccessible = "Недоступне"
-    no_data = "Інформація відсутня"
+    no_data = "Невідомо"
 
 
 class WaterEnum(BasicEnum):
     stable = "Стабільна"
     unstable = "Нестабільна"
-    no_data = "Інформація відсутня"
+    no_data = "Невідомо"
 
 
 class FuelStationEnum(BasicEnum):
     open = "Відчинено"
     closed = "Зачинено"
-    no_data = "Інформація відсутня"
+    no_data = "Невідомо"
 
 
 class HospitalEnum(BasicEnum):
     open = "Відчинено"
     closed = "Зачинено"
-    no_data = "Інформація відсутня"
+    no_data = "Невідомо"

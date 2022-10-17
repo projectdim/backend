@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 
 from sqlalchemy.orm import Session
 
@@ -13,13 +13,16 @@ router = APIRouter()
 
 
 @router.post('/register', response_model=schemas.UserOut)
-async def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)) -> Any:
+async def register_user(user: schemas.UserCreate,
+                        db: Session = Depends(get_db),
+                        current_active_user: models.User = Security(get_current_active_user,
+                                                                    scopes=['users:create'])) -> Any:
 
     existing_user = crud.get_by_email(db, email=user.email)
     if existing_user:
         raise HTTPException(status_code=400, detail="User exists")
 
-    new_user = crud.create(db, obj_in=user)
+    new_user = crud.create(db, obj_in=user, role="aid_worker")
 
     if not new_user:
         raise HTTPException(status_code=500, detail="Cannot connect to db, please try again later")
@@ -30,7 +33,11 @@ async def register_user(user: schemas.UserCreate, db: Session = Depends(get_db))
 
 
 @router.post('/invite')
-async def generate_invite_link(user: schemas.UserInvite, db: Session = Depends(get_db)) -> Any:
+async def generate_invite_link(user: schemas.UserInvite,
+                               db: Session = Depends(get_db),
+                               current_active_user: models.User = Security(get_current_active_user,
+                                                                           scopes=['users:create'])) -> Any:
+
     existing_user = crud.get_by_email(db, email=user.email)
     if existing_user:
         raise HTTPException(status_code=400, detail="User exists")
@@ -46,7 +53,9 @@ async def generate_invite_link(user: schemas.UserInvite, db: Session = Depends(g
 
 
 @router.post('/confirm-registration', response_model=schemas.UserOut)
-async def confirm_user_registration(access_token: str, user: schemas.UserCreate, db: Session = Depends(get_db)) -> Any:
+async def confirm_user_registration(access_token: str,
+                                    user: schemas.UserCreate,
+                                    db: Session = Depends(get_db)) -> Any:
 
     new_user = crud.confirm_registration(db, access_token=access_token, obj_in=user)
 
@@ -84,3 +93,4 @@ async def change_user_password(updated_info: schemas.UserPasswordUpdate,
         raise HTTPException(status_code=400, detail='The provided password was incorrect.')
 
     return updated_user
+

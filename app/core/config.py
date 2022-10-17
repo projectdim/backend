@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_PASSWORD = os.getenv("SUPERUSER_PASSWORD", "asd112233")
 
     TEST_USER_EMAIL: str = os.getenv("TEST_USER_EMAIL", "test@test.com")
+    TEST_USER_PASSWORD: str = os.getenv("TEST_USER_PASSWORD", "asd112233")
 
     class Config:
         case_sensitive = True

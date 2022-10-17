@@ -14,7 +14,9 @@ router = APIRouter()
 
 @router.post('/create', response_model=schemas.OrganizationOut)
 async def create_organization(organization: schemas.OrganizationBase,
-                              db: Session = Depends(get_db)) -> Any:
+                              db: Session = Depends(get_db),
+                              current_active_user: models.User = Security(get_current_active_user,
+                                                                          scopes=["organizations:create"])) -> Any:
 
     existing_organization = crud.get_by_name(db, organization.name)
 
@@ -31,6 +33,8 @@ async def create_organization(organization: schemas.OrganizationBase,
 
 @router.get('/all', response_model=List[schemas.OrganizationOut])
 async def get_organization_list(page: int = 1, limit: int = 20,
-                                db: Session = Depends(get_db)):
+                                db: Session = Depends(get_db),
+                                current_active_user: models.User = Security(get_current_active_user,
+                                                                            scopes=["organizations:view"])):
 
     return crud.get_organizations_list(db, limit=limit, skip=page - 1)

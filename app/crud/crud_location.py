@@ -4,8 +4,12 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
+import pygeohash as pgh
+
+
 from app.crud.crud_changelogs import create_changelog
 from app.models.location import Location
+from app.models.geospatial_index import GeospatialIndex
 from app.schemas.location import LocationCreate, LocationReports
 from app.utils.populate_db import populate_reports
 
@@ -20,6 +24,7 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
             lng=obj_in.lng,
             country=obj_in.country,
             city=obj_in.city,
+            status=3,
             reports=populate_reports()
         )
 
@@ -28,49 +33,16 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         db.refresh(db_obj)
 
         for i in range(3):
-            submit_location_reports(db, obj_in=LocationReports(**populate_reports()))
+            submit_location_reports(db, obj_in=LocationReports(location_id=db_obj.id, **populate_reports()), user_id=12)
 
-        # return_obj = db.query(Location).filter(Location.id == db_obj.id).first()
-        # random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
-        #                                          '%m/%d/%Y %I:%M %p')
-        #
-        # db_changelog = ChangeLog(
-        #     created_at=random_time,
-        #     location_id=return_obj.id,
-        #     action_type=1,
-        #     old_flags={"buildingCondition": "Пошкоджена"},
-        #     new_flags={"buildingCondition": "Неушкоджена"}
-        # )
-        # db.add(db_changelog)
-        # db.commit()
-        # db.refresh(db_changelog)
-        #
-        # random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
-        #                                          '%m/%d/%Y %I:%M %p')
-        #
-        # db_changelog = ChangeLog(
-        #     created_at=random_time,
-        #     location_id=return_obj.id,
-        #     action_type=1,
-        #     old_flags={"electricity": "Переривчаста", "fuelStation": "зачинено"},
-        #     new_flags={"electricity": "Стабільна", "fuelStation": "відчинено"}
-        # )
-        # db.add(db_changelog)
-        # db.commit()
-        # db.refresh(db_changelog)
-        #
-        # random_time = datetime.datetime.strptime(random_date("9/1/2022 1:30 PM", "9/18/2022 4:50 PM", random.random()),
-        #                                          '%m/%d/%Y %I:%M %p')
-        #
-        # db_changelog = ChangeLog(
-        #     created_at=random_time,
-        #     location_id=return_obj.id,
-        #     action_type=2,
-        #     media_url="http://static.prsa.pl/images/22f26b47-af71-4daa-a669-07f10bc23810.jpg"
-        # )
-        # db.add(db_changelog)
-        # db.commit()
-        # db.refresh(db_changelog)
+        index = GeospatialIndex(
+            location_id=db_obj.id,
+            geohash=pgh.encode(db_obj.lat, db_obj.lng, 5),
+            lat=db_obj.lat,
+            lng=db_obj.lng
+        )
+        db.add(index)
+        db.commit()
 
         return db.query(Location).get(db_obj.id)
 
@@ -111,10 +83,12 @@ def get_location_by_coordinates(db: Session, lat: float, lng: float) -> Location
 
 
 def get_locations_in_range(db: Session, lat: dict, lng: dict) -> List[Location]:
-    return db.query(Location)\
-        .filter(Location.lat.between(lat["lo"], lat["hi"]),
-                Location.lng.between(lng["lo"], lng["hi"])).all()
+    hash = pgh.encode(lat["lo"], lng["lo"], 5)
+    # return db.query(Location)\
+    #     .filter(Location.lat.between(lat["lo"], lat["hi"]),
+    #             Location.lng.between(lng["lo"], lng["hi"])).all()
                 #Location.status === 3
+    return db.query(GeospatialIndex).filter(GeospatialIndex.geohash.like(hash)).all()
 
 
 def get_locations_awaiting_reports_count(db: Session) -> int:
