@@ -6,8 +6,8 @@ from sqlalchemy import desc
 
 import pygeohash as pgh
 
-
 from app.crud.crud_changelogs import create_changelog
+from app.crud.crud_geospatial import create_index
 from app.models.location import Location
 from app.models.geospatial_index import GeospatialIndex
 from app.schemas.location import LocationCreate, LocationReports
@@ -35,14 +35,7 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         for i in range(3):
             submit_location_reports(db, obj_in=LocationReports(location_id=db_obj.id, **populate_reports()), user_id=12)
 
-        index = GeospatialIndex(
-            location_id=db_obj.id,
-            geohash=pgh.encode(db_obj.lat, db_obj.lng, 5),
-            lat=db_obj.lat,
-            lng=db_obj.lng
-        )
-        db.add(index)
-        db.commit()
+        index = create_index(db, location_id=db_obj.id, lat=obj_in.lat, lng=obj_in.lng, status=db_obj.status)
 
         return db.query(Location).get(db_obj.id)
 
@@ -51,7 +44,7 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         return None
 
 
-def create_location_review_request(db: Session, *, obj_in: LocationCreate) -> Location:
+def create_location_review_request(db: Session, *, obj_in: LocationCreate) -> Optional[Location]:
 
     try:
         db_obj = Location(
@@ -67,6 +60,9 @@ def create_location_review_request(db: Session, *, obj_in: LocationCreate) -> Lo
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+
+        index = create_index(db, location_id=db_obj.id, lat=obj_in.lat, lng=obj_in.lng, status=db_obj.status)
+
         return db_obj
 
     except Exception as e:
@@ -74,8 +70,8 @@ def create_location_review_request(db: Session, *, obj_in: LocationCreate) -> Lo
         return None
 
 
-def get_location_by_index(db: Session, index: int) -> Location:
-    return db.query(Location).filter(Location.index == index).first()
+def get_location_by_id(db: Session, location_id: int) -> Location:
+    return db.query(Location).get(location_id)
 
 
 def get_location_by_coordinates(db: Session, lat: float, lng: float) -> Location:
@@ -83,12 +79,13 @@ def get_location_by_coordinates(db: Session, lat: float, lng: float) -> Location
 
 
 def get_locations_in_range(db: Session, lat: dict, lng: dict) -> List[Location]:
-    hash = pgh.encode(lat["lo"], lng["lo"], 5)
+    # TODO search with a wildcard on the last char of geohash
+    geohash = pgh.encode(lat["lo"], lng["lo"], 5)
     # return db.query(Location)\
     #     .filter(Location.lat.between(lat["lo"], lat["hi"]),
     #             Location.lng.between(lng["lo"], lng["hi"])).all()
                 #Location.status === 3
-    return db.query(GeospatialIndex).filter(GeospatialIndex.geohash.like(hash)).all()
+    return db.query(GeospatialIndex).filter(GeospatialIndex.geohash.like(geohash)).all()
 
 
 def get_locations_awaiting_reports_count(db: Session) -> int:
@@ -162,6 +159,10 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
 
     db.commit()
     db.refresh(location)
+
+    index_record = db.query(GeospatialIndex).filter(GeospatialIndex.location_id == obj_in.location_id).first()
+    index_record.status = 3
+    db.commit()
 
     changelog = create_changelog(db,
                                  location_id=location.id,

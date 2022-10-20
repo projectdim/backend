@@ -10,7 +10,7 @@ class ChangelogOut(BaseModel):
     created_at: datetime
     action_type: int
 
-    old_flags: Dict
+    old_flags: Optional[Dict]
     new_flags: Dict
 
     class Config:

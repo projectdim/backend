@@ -32,6 +32,12 @@ class LocationSearch(LocationBase):
     lng: Dict
 
 
+class TestLocationSearch(BaseModel):
+    lat: float
+    lng: float
+    zoom: int
+
+
 class Lat(BaseModel):
     lat: str
 

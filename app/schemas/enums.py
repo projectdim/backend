@@ -10,7 +10,7 @@ class BasicEnum(str, Enum):
 class BuildingConditionEnum(BasicEnum):
     intact = "Неушкоджена"
     damaged = "Пошкоджена"
-    none = "Зруйнована"
+    none = "Невідомо"
 
 
 class ElectricityEnum(BasicEnum):

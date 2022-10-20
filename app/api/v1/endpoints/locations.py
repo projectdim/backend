@@ -8,6 +8,7 @@ from app.api.dependencies import get_db, get_current_active_user
 from app import schemas, models
 from app.crud import crud_location as crud
 from app.crud import crud_changelogs as logs_crud
+from app.crud import crud_geospatial as geo_crud
 
 router = APIRouter()
 
@@ -36,11 +37,28 @@ async def get_location(lat: float, lng: float, db: Session = Depends(get_db)) ->
 
 
 @router.post('/cord_search')
-async def get_locations_by_coordinates(coordinates: schemas.LocationSearch, db: Session = Depends(get_db)) -> Any:
+async def get_locations_by_coordinates(coordinates: schemas.TestLocationSearch, db: Session = Depends(get_db)) -> Any:
 
-    locations = crud.get_locations_in_range(db, coordinates.lat, coordinates.lng)
+    # locations = crud.get_locations_in_range(db, coordinates.lat, coordinates.lng)
+    #
+    # return [location.to_json() for location in locations]
 
-    return [location.to_json() for location in locations]
+    markers = geo_crud.search_indexes_in_range(db, coordinates.lat, coordinates.lng, coordinates.zoom)
+
+    print(f"Markers : {len(markers)}")
+
+    return [marker.to_json() for marker in markers]
+
+
+@router.get('/location-info', response_model=schemas.LocationOut)
+async def get_location_info(location_id: int, db: Session = Depends(get_db)) -> Any:
+
+    location = crud.get_location_by_id(db, location_id)
+
+    if not location:
+        raise HTTPException(status_code=400, detail="Not found")
+
+    return location.to_json()
 
 
 @router.get('/changelogs', response_model=List[schemas.ChangelogOut])
