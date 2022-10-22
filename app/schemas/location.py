@@ -38,14 +38,6 @@ class TestLocationSearch(BaseModel):
     zoom: int
 
 
-class Lat(BaseModel):
-    lat: str
-
-
-class Lng(BaseModel):
-    lng: str
-
-
 class LocationOut(BaseModel):
     id: int
     created_at: datetime
@@ -57,6 +49,7 @@ class LocationOut(BaseModel):
     country: str
     position: Dict
     reports: Optional[Dict] = None
+    distance: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -76,3 +69,4 @@ class LocationReports(BaseModel):
     water: report.WaterReport
     fuelStation: report.FuelStationReport
     hospital: report.HospitalReport
+

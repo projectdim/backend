@@ -98,13 +98,15 @@ async def get_pending_locations_count(db: Session = Depends(get_db),
 @router.get('/location-requests', response_model=List[schemas.LocationOut])
 async def get_requested_locations(page: int = 1,
                                   limit: int = 20,
+                                  user_lat: float = None,
+                                  user_lng: float = None,
                                   db: Session = Depends(get_db),
                                   current_user: models.User = Security(get_current_active_user,
                                                                        scopes=['locations:view'])) -> Any:
 
     locations = crud.get_locations_awaiting_reports(db, limit, page - 1)
 
-    return [location.to_json() for location in locations]
+    return [location.to_json(user_lat, user_lng) for location in locations]
 
 
 @router.put('/assign-location')

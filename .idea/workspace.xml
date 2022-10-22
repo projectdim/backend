@@ -2,30 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gmaps-v1.0.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gmaps-v1.0.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/locations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/locations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/reports.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/reports.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/crud/crud_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/init_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/changelog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/changelog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/geospatial_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/geospatial_index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/populate_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/populate_db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/changelog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/changelog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/enums.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/schemas/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/api/test_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/api/test_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/utils/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/utils/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/utils/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,6 +150,8 @@
       <workItem from="1665942009655" duration="6921000" />
       <workItem from="1665949424823" duration="639000" />
       <workItem from="1666027922060" duration="3960000" />
+      <workItem from="1666374574367" duration="1871000" />
+      <workItem from="1666425136873" duration="156000" />
     </task>
     <servers />
   </component>
