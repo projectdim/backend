@@ -5,3 +5,4 @@ from .user import UserCreate, UserBase, UserOut, UserPasswordUpdate, UserReprese
 from .session import UserSession
 from .organization import OrganizationBase, OrganizationOut
 from .changelog import ChangelogOut
+from .roles import UserRole

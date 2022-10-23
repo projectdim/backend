@@ -7,6 +7,7 @@ from app.core.security import get_password_hash, verify_password, create_access_
 from app.models.user import User, role_permissions
 from app.schemas.user import UserCreate, UserBase, UserInvite
 from app.core.config import settings
+from app.crud.crud_roles import get_role_by_name
 
 
 def get_by_email(db: Session, *, email: str) -> Optional[User]:
@@ -17,15 +18,22 @@ def get(db: Session, *, user_id: int) -> Optional[User]:
     return db.query(User).get(user_id)
 
 
-def create(db: Session, *, obj_in: UserCreate, role: str) -> User:
+def create(db: Session, *, obj_in: UserCreate, role: str) -> Optional[User]:
+
+    user_role = get_role_by_name(db, role)
+
+    if not user_role:
+        return None
+
     db_obj = User(
         email=obj_in.email,
         username=obj_in.username,
         hashed_password=get_password_hash(obj_in.password),
         full_name=obj_in.full_name,
-        role=role,
-        organization=1,
-        permissions=role_permissions[role]
+        role=user_role.verbose_name,
+        # TODO populate userCreate model with organization_id
+        organization=5,
+        permissions=user_role.permissions
     )
     db.add(db_obj)
     db.commit()
@@ -34,12 +42,17 @@ def create(db: Session, *, obj_in: UserCreate, role: str) -> User:
 
 
 def create_invite(db: Session, *, obj_in: UserInvite) -> Optional[User]:
+
+    user_role = get_role_by_name(db, "aid worker")
+    if not user_role:
+        return None
+
     db_obj = User(
         email=obj_in.email,
         organization=obj_in.organization,
         is_active=False,
-        role="aid worker",
-        permissions=role_permissions["aid_worker"],
+        role=user_role.verbose_name,
+        permissions=user_role.permissions,
         registration_token=create_access_token(subject=obj_in.email, scopes=['users:confirm']),
         registration_token_expires=datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
