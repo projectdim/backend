@@ -78,16 +78,6 @@ def get_location_by_coordinates(db: Session, lat: float, lng: float) -> Location
     return db.query(Location).filter(Location.lat == lat, Location.lng == lng).first()
 
 
-def get_locations_in_range(db: Session, lat: dict, lng: dict) -> List[Location]:
-    # TODO search with a wildcard on the last char of geohash
-    geohash = pgh.encode(lat["lo"], lng["lo"], 5)
-    # return db.query(Location)\
-    #     .filter(Location.lat.between(lat["lo"], lat["hi"]),
-    #             Location.lng.between(lng["lo"], lng["hi"])).all()
-                #Location.status === 3
-    return db.query(GeospatialIndex).filter(GeospatialIndex.geohash.like(geohash)).all()
-
-
 def get_locations_awaiting_reports_count(db: Session) -> int:
     return db.query(Location).filter(Location.status == 1, Location.reported_by == None).count()
 

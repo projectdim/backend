@@ -1,19 +1,33 @@
 ## Project installation
 
+Install the requirements
 ```
 pip install -r requirements.txt
 ```
 
-After installing the requirements, create an fill out the .env file.
-Next up, create the db (requires postgreSQL installed) with:
+Create a new file - `.env` in the root folder of the project and fill it out the same as `.env.example`
+
+
+Next up, create the db (requires postgresSQL installed) with:
 
 ```
 alembic upgrade heads
 ```
 
+
 If you have changed any models (or made any changes that require migrating the db) run:
 ```
 alembic revision --autogenerate -m "Note text"
+```
+
+Run the `populate_db.py` file in the root of the project
+```
+python -m populate_db.py
+```
+
+Run the tests with :
+```
+pytest 
 ```
 
 Run the project with :

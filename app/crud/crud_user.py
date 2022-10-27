@@ -31,8 +31,7 @@ def create(db: Session, *, obj_in: UserCreate, role: str) -> Optional[User]:
         hashed_password=get_password_hash(obj_in.password),
         full_name=obj_in.full_name,
         role=user_role.verbose_name,
-        # TODO populate userCreate model with organization_id
-        organization=5,
+        organization=obj_in.organization,
         permissions=user_role.permissions
     )
     db.add(db_obj)
@@ -43,7 +42,7 @@ def create(db: Session, *, obj_in: UserCreate, role: str) -> Optional[User]:
 
 def create_invite(db: Session, *, obj_in: UserInvite) -> Optional[User]:
 
-    user_role = get_role_by_name(db, "aid worker")
+    user_role = get_role_by_name(db, "aid_worker")
     if not user_role:
         return None
 
@@ -119,10 +118,11 @@ def authenticate(db: Session, *, email: str, password: str) -> Optional[User]:
     return user
 
 
-def delete_user(db: Session, user_id: int) -> None:
-
-    user = get(db, user_id)
+def delete_user(db: Session, user_id: int) -> Optional[User]:
+    user = get(db, user_id=user_id)
+    if not user:
+        return None
 
     db.delete(user)
     db.commit()
-    return get(db, user_id)
+    return get(db, user_id=user_id)

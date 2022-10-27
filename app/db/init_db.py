@@ -15,7 +15,15 @@ def init_db(db: Session) -> User:
     if not role:
         role_crud.create_role(db, obj_in=UserRole(
             verbose_name="platform_administrator",
-            permissions=["locations:view", "locations:delete", "users:create", "users:me", "users:edit"]))
+            permissions=[
+                "locations:view",
+                "locations:delete",
+                "users:create",
+                "users:me",
+                "users:edit",
+                "organizations:view",
+                "organizations:create"
+            ]))
 
     aid_worker = role_crud.get_role_by_name(db, "aid worker")
     if not aid_worker:
@@ -29,12 +37,12 @@ def init_db(db: Session) -> User:
         organization = org_crud.create(db, obj_in=OrganizationBase(name="DIM"))
 
     # creating first superuser
-    # TODO ADD ORGANIZATION TO CREATE USER METHOD
     user = crud.get_by_email(db, email=settings.FIRST_SUPERUSER)
     if not user:
         new_user = UserCreate(
             email=settings.FIRST_SUPERUSER,
             password=settings.FIRST_SUPERUSER_PASSWORD,
+            organization=organization.id
         )
         user = crud.create(db, obj_in=new_user, role="platform_administrator")
 

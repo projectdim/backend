@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, status
 
 from sqlalchemy.orm import Session
 
@@ -32,7 +32,7 @@ async def register_user(user: schemas.UserCreate,
     return new_user
 
 
-@router.post('/invite')
+@router.post('/invite', response_model=schemas.UserOut)
 async def generate_invite_link(user: schemas.UserInvite,
                                db: Session = Depends(get_db),
                                current_active_user: models.User = Security(get_current_active_user,
@@ -93,4 +93,16 @@ async def change_user_password(updated_info: schemas.UserPasswordUpdate,
         raise HTTPException(status_code=400, detail='The provided password was incorrect.')
 
     return updated_user
+
+
+@router.delete('/delete-me')
+async def delete_me(current_user: models.User = Depends(get_current_active_user),
+                    db: Session = Depends(get_db)) -> Any:
+
+    deleted_user = crud.delete_user(db, current_user.id)
+
+    if deleted_user:
+        raise HTTPException(status_code=400, detail="Cannot perform such action")
+
+    return status.HTTP_204_NO_CONTENT
 
