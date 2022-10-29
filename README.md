@@ -4,6 +4,22 @@ Install the requirements
 ```
 pip install -r requirements.txt
 ```
+-----------------------------------------------
+
+## Shell script (Option 1)
+
+On windows - just type the following to the command line of your IDE:
+```
+pre_start.sh
+```
+
+On Unix systems - type this:
+```
+/usr/bin/bash pre_start.sh
+```
+
+------------------------------------------------
+## Default (Option 2)
 
 Create a new file - `.env` in the root folder of the project and fill it out the same as `.env.example`
 
@@ -44,8 +60,8 @@ Run the tests with :
 ```
 pytest 
 ```
-
-Run the project with :
+---------------------------------
+## Run the project with :
 ```
 uvicorn app.main:app --reload --port 7000
 ```
