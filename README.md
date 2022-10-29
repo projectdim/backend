@@ -20,9 +20,24 @@ If you have changed any models (or made any changes that require migrating the d
 alembic revision --autogenerate -m "Note text"
 ```
 
-Run the `populate_db.py` file in the root of the project
+You might need to enter env for this (not sure) :
+
+On unix systems :
 ```
-python -m populate_db.py
+source venv/bin/activate
+```
+
+On windows :
+```
+venv/Scripts/activate.bat
+```
+
+------------------------
+
+Run the `populate_db.py` file in the root of the project
+
+```
+python populate_db.py
 ```
 
 Run the tests with :
