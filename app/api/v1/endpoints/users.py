@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Security, status
+from fastapi import APIRouter, Depends, HTTPException, Security, status, Response
 
 from sqlalchemy.orm import Session
 
@@ -104,5 +104,9 @@ async def delete_me(current_user: models.User = Depends(get_current_active_user)
     if deleted_user:
         raise HTTPException(status_code=400, detail="Cannot perform such action")
 
-    return status.HTTP_204_NO_CONTENT
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+# TODO user change organization route
+# TODO user change role route
 

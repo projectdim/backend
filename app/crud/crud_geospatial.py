@@ -42,4 +42,7 @@ def search_indexes_in_range(db: Session, lat: float, lng: float, zoom: int = 6) 
     return db.query(GeospatialIndex).filter(GeospatialIndex.geohash.like(query)).all()
 
 
+def search_index_by_location_id(db: Session, location_id: int) -> GeospatialIndex:
+    return db.query(GeospatialIndex).filter(GeospatialIndex.location_id == location_id).first()
+
 

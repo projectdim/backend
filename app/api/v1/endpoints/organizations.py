@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, status, Response
 
 from sqlalchemy.orm import Session
 
@@ -35,6 +35,74 @@ async def create_organization(organization: schemas.OrganizationBase,
 async def get_organization_list(page: int = 1, limit: int = 20,
                                 db: Session = Depends(get_db),
                                 current_active_user: models.User = Security(get_current_active_user,
-                                                                            scopes=["organizations:view"])):
+                                                                            scopes=["organizations:view"])) -> Any:
 
     return crud.get_organizations_list(db, limit=limit, skip=page - 1)
+
+
+@router.get('/{organization_id}', response_model=schemas.OrganizationOut)
+async def get_organization_by_id(organization_id: int, db: Session = Depends(get_db),
+                                 current_active_user: models.User = Security(get_current_active_user,
+                                                                             scopes=['organizations:view'])) -> Any:
+
+    organization = crud.get_by_id(db, organization_id=organization_id)
+    if not organization:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    return organization
+
+
+@router.put('/{organization_id}/invite', response_model=schemas.OrganizationOut)
+async def invite_organization_members(
+        organization_id: int,
+        users: schemas.OrganizationUserInvite,
+        db: Session = Depends(get_db),
+        current_active_user: models.User = Security(get_current_active_user, scopes=['organizations:edit'])
+) -> Any:
+
+    organization = crud.get_by_id(db, organization_id=organization_id)
+    if not organization:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    updated_organization = crud.add_members(db, organization_id=organization_id, user_emails=users.emails)
+
+    return updated_organization
+
+
+@router.put('/{organization_id}/remove', response_model=schemas.OrganizationOut)
+async def remove_organization_member(
+        organization_id: int,
+        user_id: int,
+        db: Session = Depends(get_db),
+        current_active_user: models.User = Security(get_current_active_user, scopes=['organizations:edit'])
+) -> Any:
+
+    organization = crud.get_by_id(db, organization_id=organization_id)
+    if not organization:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    updated_organization = crud.remove_members(db, organization_id=organization_id, user_id=user_id)
+    if not updated_organization:
+        raise HTTPException(status_code=400, detail="This user does not belong to such organization")
+
+    return updated_organization
+
+
+@router.delete('/{organization_id}')
+async def delete_organization(
+        organization_id: int,
+        db: Session = Depends(get_db),
+        current_active_user: models.User = Security(get_current_active_user, scopes=['organizations:delete'])
+) -> Any:
+
+    organization = crud.get_by_id(db, organization_id=organization_id)
+    if not organization:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    removed_organization = crud.delete_organization(db, organization_id=organization_id)
+    if removed_organization:
+        raise HTTPException(status_code=400, detail="Cannot perform such action")
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+

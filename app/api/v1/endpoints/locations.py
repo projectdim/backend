@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, status, Response
 
 from sqlalchemy.orm import Session
 
@@ -155,3 +155,18 @@ async def submit_location_report(reports: schemas.LocationReports,
         raise HTTPException(status_code=400, detail='Cannot find the requested location')
 
     return location.to_json()
+
+
+@router.delete('/remove-location')
+async def remove_location(location_id: int,
+                          db: Session = Depends(get_db),
+                          current_user: models.User = Security(get_current_active_user,
+                                                               scopes=['locations:delete'])) -> Any:
+
+    # TODO place to archive?
+    location = crud.delete_location(db, location_id=location_id)
+
+    if location:
+        raise HTTPException(status_code=400, detail='Cannot perform such operation')
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

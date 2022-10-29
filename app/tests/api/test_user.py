@@ -1,6 +1,4 @@
 from typing import Dict
-import json
-
 from fastapi.testclient import TestClient
 
 from sqlalchemy.orm import Session
@@ -44,7 +42,7 @@ def test_confirm_user_invite(client: TestClient, db: Session) -> None:
     }
 
     r = client.post(f"{settings.API_V1_STR}/users/confirm-registration?access_token={test_user_registration_token}",
-                    data=json.dumps(payload))
+                    json=payload)
 
     assert 200 <= r.status_code < 300
     registered_user = r.json()
@@ -86,7 +84,7 @@ def test_patch_user_password(client: TestClient, db: Session, aid_worker_token_h
         "new_password": new_password
     }
 
-    r = client.put(f"{settings.API_V1_STR}/users/password", data=json.dumps(payload), headers=aid_worker_token_headers)
+    r = client.put(f"{settings.API_V1_STR}/users/password", json=payload, headers=aid_worker_token_headers)
     assert 200 <= r.status_code < 300
 
     incorrect_login_payload = {
@@ -114,7 +112,7 @@ def test_patch_user_password(client: TestClient, db: Session, aid_worker_token_h
         "new_password": settings.TEST_USER_PASSWORD
     }
 
-    r = client.put(f"{settings.API_V1_STR}/users/password", data=json.dumps(payload), headers=aid_worker_token_headers)
+    r = client.put(f"{settings.API_V1_STR}/users/password", json=payload, headers=aid_worker_token_headers)
     assert 200 <= r.status_code < 300
 
 

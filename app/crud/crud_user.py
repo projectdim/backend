@@ -32,7 +32,8 @@ def create(db: Session, *, obj_in: UserCreate, role: str) -> Optional[User]:
         full_name=obj_in.full_name,
         role=user_role.verbose_name,
         organization=obj_in.organization,
-        permissions=user_role.permissions
+        permissions=user_role.permissions,
+        email_confirmed=True,
     )
     db.add(db_obj)
     db.commit()
@@ -45,6 +46,8 @@ def create_invite(db: Session, *, obj_in: UserInvite) -> Optional[User]:
     user_role = get_role_by_name(db, "aid_worker")
     if not user_role:
         return None
+
+    # TODO CHECK IF ORGANIZATION EXISTS
 
     db_obj = User(
         email=obj_in.email,

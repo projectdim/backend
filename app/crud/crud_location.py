@@ -4,8 +4,6 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
-import pygeohash as pgh
-
 from app.crud.crud_changelogs import create_changelog
 from app.crud.crud_geospatial import create_index
 from app.models.location import Location
@@ -89,6 +87,10 @@ def get_locations_awaiting_reports(db: Session, limit: int = 20, skip: int = 0) 
         .offset(skip * limit).all()
 
 
+def get_all_locations(db: Session) -> List[Location]:
+    return db.query(Location).all()
+
+
 def assign_report(db: Session, user_id: int, location_id: int) -> Optional[Location]:
     location = db.query(Location).get(location_id)
 
@@ -162,3 +164,12 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     # TODO rollback strategy if no changelog was created
 
     return location
+
+
+def delete_location(db: Session, location_id: int) -> Optional[Location]:
+
+    location = get_location_by_id(db, location_id=location_id)
+
+    db.delete(location)
+    db.commit()
+    return get_location_by_id(db, location_id=location_id)

@@ -37,7 +37,7 @@ class UserOut(UserBase):
 
 class UserRepresentation(UserBase):
     id: int
-    organization: Optional[str]
+    organization: Optional[int]
 
     class Config:
         orm_mode = True

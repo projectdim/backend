@@ -39,7 +39,7 @@ class Location(Base):
         print(geopy.distance.geodesic(geolocation_coords, location_coords).km)
         return geopy.distance.geodesic(geolocation_coords, location_coords).km
 
-    def to_json(self, user_lat = None, user_lng = None):
+    def to_json(self, user_lat=None, user_lng=None):
         return {
             "id": self.id,
             "created_at": self.created_at,

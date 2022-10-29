@@ -9,7 +9,7 @@ from app.core.config import settings
 
 
 def init_db(db: Session) -> User:
-
+    # TODO CREATE PERMISSION PRESETS INSTEAD OF EXPLICIT DECLARATION
     # initializing base roles
     role = role_crud.get_role_by_name(db, "platform_administrator")
     if not role:
@@ -17,19 +17,26 @@ def init_db(db: Session) -> User:
             verbose_name="platform_administrator",
             permissions=[
                 "locations:view",
+                "locations:edit",
                 "locations:delete",
                 "users:create",
                 "users:me",
                 "users:edit",
                 "organizations:view",
-                "organizations:create"
+                "organizations:create",
+                "organizations:edit",
+                "organizations:delete"
             ]))
 
     aid_worker = role_crud.get_role_by_name(db, "aid worker")
     if not aid_worker:
         role_crud.create_role(db, obj_in=UserRole(
             verbose_name="aid_worker",
-            permissions=["locations:view", "locations:edit", "users:me", "users:edit"]))
+            permissions=["locations:view",
+                         "locations:edit",
+                         "users:me",
+                         "users:edit"
+                         ]))
 
     # creating the "DIM" organization
     organization = org_crud.get_by_name(db, "DIM")

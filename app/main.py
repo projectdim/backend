@@ -7,6 +7,7 @@ from app.api.v1.api import api_router
 app = FastAPI()
 
 # TODO CHECK ALL ROUTES SECURITY DEPENDENCIES
+# TODO CREATE RESPONSE EXCEPTION SCHEMAS
 
 app.add_middleware(
     CORSMiddleware,

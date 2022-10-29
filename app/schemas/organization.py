@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from app.schemas import UserRepresentation
 
@@ -15,3 +15,7 @@ class OrganizationOut(OrganizationBase):
 
     class Config:
         orm_mode = True
+
+
+class OrganizationUserInvite(BaseModel):
+    emails: List[EmailStr]
