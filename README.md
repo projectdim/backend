@@ -4,6 +4,9 @@ Install the requirements
 ```
 pip install -r requirements.txt
 ```
+
+Create a new file - `.env` in the root folder of the project and fill it out the same as `.env.example`
+
 -----------------------------------------------
 
 ## Shell script (Option 1)
@@ -20,9 +23,6 @@ On Unix systems - type this:
 
 ------------------------------------------------
 ## Default (Option 2)
-
-Create a new file - `.env` in the root folder of the project and fill it out the same as `.env.example`
-
 
 Next up, create the db (requires postgresSQL installed) with:
 
