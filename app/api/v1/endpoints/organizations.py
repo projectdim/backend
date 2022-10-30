@@ -8,7 +8,6 @@ from app.api.dependencies import get_db, get_current_active_user
 from app import schemas, models
 from app.crud import crud_organizations as crud
 
-
 router = APIRouter()
 
 
@@ -17,7 +16,6 @@ async def create_organization(organization: schemas.OrganizationBase,
                               db: Session = Depends(get_db),
                               current_active_user: models.User = Security(get_current_active_user,
                                                                           scopes=["organizations:create"])) -> Any:
-
     existing_organization = crud.get_by_name(db, organization.name)
 
     if existing_organization:
@@ -36,15 +34,28 @@ async def get_organization_list(page: int = 1, limit: int = 20,
                                 db: Session = Depends(get_db),
                                 current_active_user: models.User = Security(get_current_active_user,
                                                                             scopes=["organizations:view"])) -> Any:
-
     return crud.get_organizations_list(db, limit=limit, skip=page - 1)
+
+
+@router.get('/search', response_model=List[schemas.OrganizationOut])
+async def search_organizations_by_name(
+        query: str,
+        db: Session = Depends(get_db),
+        current_active_user: models.User = Security(get_current_active_user,
+                                                    scopes=["organizations:view"])
+) -> Any:
+    organizations = crud.get_by_substr(db, query)
+    print(organizations)
+    if not organizations:
+        return []
+
+    return organizations
 
 
 @router.get('/{organization_id}', response_model=schemas.OrganizationOut)
 async def get_organization_by_id(organization_id: int, db: Session = Depends(get_db),
                                  current_active_user: models.User = Security(get_current_active_user,
                                                                              scopes=['organizations:view'])) -> Any:
-
     organization = crud.get_by_id(db, organization_id=organization_id)
     if not organization:
         raise HTTPException(status_code=404, detail="Not found")
@@ -59,7 +70,6 @@ async def invite_organization_members(
         db: Session = Depends(get_db),
         current_active_user: models.User = Security(get_current_active_user, scopes=['organizations:edit'])
 ) -> Any:
-
     organization = crud.get_by_id(db, organization_id=organization_id)
     if not organization:
         raise HTTPException(status_code=404, detail="Not found")
@@ -76,7 +86,6 @@ async def remove_organization_member(
         db: Session = Depends(get_db),
         current_active_user: models.User = Security(get_current_active_user, scopes=['organizations:edit'])
 ) -> Any:
-
     organization = crud.get_by_id(db, organization_id=organization_id)
     if not organization:
         raise HTTPException(status_code=404, detail="Not found")
@@ -94,7 +103,6 @@ async def delete_organization(
         db: Session = Depends(get_db),
         current_active_user: models.User = Security(get_current_active_user, scopes=['organizations:delete'])
 ) -> Any:
-
     organization = crud.get_by_id(db, organization_id=organization_id)
     if not organization:
         raise HTTPException(status_code=404, detail="Not found")
@@ -104,5 +112,3 @@ async def delete_organization(
         raise HTTPException(status_code=400, detail="Cannot perform such action")
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-

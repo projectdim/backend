@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_organizations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/organization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/organization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,7 +143,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Shell Script.pre_start.sh" />
-        <item itemvalue="Python.populate_db (1)" />
         <item itemvalue="HTTP Request.All in gmaps-endpoints" />
         <item itemvalue="Python.init_db" />
         <item itemvalue="Python.populate_db" />
@@ -177,6 +179,7 @@
       <workItem from="1666718296094" duration="2901000" />
       <workItem from="1666892811934" duration="4664000" />
       <workItem from="1667039181347" duration="4531000" />
+      <workItem from="1667151692554" duration="1347000" />
     </task>
     <servers />
   </component>

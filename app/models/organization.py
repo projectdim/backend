@@ -12,5 +12,7 @@ class Organization(Base):
     created_at = Column(DateTime, default=func.now())
 
     name = Column(String, nullable=False, unique=True)
+    website = Column(String)
+    description = Column(String)
     # leader = Column(Integer, ForeignKey("user.id"))
     participants = relationship("User")
