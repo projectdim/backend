@@ -7,6 +7,7 @@ from sqlalchemy import desc
 from app.crud.crud_changelogs import create_changelog
 from app.crud.crud_geospatial import create_index
 from app.models.location import Location
+from app.models.user import User
 from app.models.geospatial_index import GeospatialIndex
 from app.schemas.location import LocationCreate, LocationReports
 from app.utils.populate_db import populate_reports
@@ -100,6 +101,9 @@ def assign_report(db: Session, user_id: int, location_id: int) -> Optional[Locat
     location.reported_by = user_id
     location.report_expires = datetime.now() + timedelta(days=1)
 
+    user = db.query(User).get(user_id)
+    user.last_activity = datetime.now()
+
     db.commit()
     db.refresh(location)
     return location
@@ -113,6 +117,9 @@ def remove_assignment(db: Session, location_id: int, user_id: int) -> Optional[L
 
     location.reported_by = None
     location.report_expires = None
+
+    user = db.query(User).get(user_id)
+    user.last_activity = datetime.now()
 
     db.commit()
     db.refresh(location)
@@ -145,21 +152,28 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     location.reports = reports
 
     # TODO confirmation for this?
+
+    # update location record
     location.status = 3
     location.report_expires = None
     location.reported_by = user_id
 
-    db.commit()
-    db.refresh(location)
+    #update
 
     index_record = db.query(GeospatialIndex).filter(GeospatialIndex.location_id == obj_in.location_id).first()
     index_record.status = 3
+
+    user = db.query(User).get(user_id)
+    user.last_activity = datetime.now()
+
     db.commit()
+    db.refresh(location)
 
     changelog = create_changelog(db,
                                  location_id=location.id,
                                  old_object=old_reports,
                                  new_object=new_reports)
+
 
     # TODO rollback strategy if no changelog was created
 

@@ -12,6 +12,8 @@ def create(db: Session, *, obj_in: OrganizationBase) -> Organization:
 
     db_obj = Organization(
         name=obj_in.name,
+        website=obj_in.website,
+        description=obj_in.description
     )
 
     db.add(db_obj)
@@ -36,6 +38,23 @@ def get_organizations_list(db: Session, limit: int = 20, skip: int = 0) -> List[
     return db.query(Organization).order_by(desc(Organization.created_at))\
         .limit(limit)\
         .offset(skip * limit).all()
+
+
+def edit_organization(db: Session, organization_id: int, obj_in: OrganizationBase) -> Optional[Organization]:
+
+    organization = get_by_id(db, organization_id=organization_id)
+    if not organization:
+        return None
+
+    # convert the request to dict to iterate over its fields
+    data_to_update = obj_in.dict(exclude_unset=True)
+    for field in data_to_update:
+        # updated the organization with no explicit field declaration
+        setattr(organization, field, data_to_update[field])
+
+    db.commit()
+    db.refresh(organization)
+    return organization
 
 
 def add_members(db: Session, organization_id: int, user_emails: List[str]) -> Organization:

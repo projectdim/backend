@@ -9,6 +9,7 @@ from app.schemas import UserRepresentation
 class OrganizationBase(BaseModel):
     name: Optional[str] = None
     website: Optional[str] = None
+    description: Optional[str] = None
 
 
 class OrganizationOut(OrganizationBase):

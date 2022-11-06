@@ -44,6 +44,30 @@ def test_get_organization_by_id(
     assert organization["participants"]
 
 
+def test_edit_organization(
+        client: TestClient,
+        db: Session,
+        superuser_token_headers: Dict[str, str],
+        master_organization_id: int
+) -> None:
+
+    payload = {
+        "description": "Master organization",
+        "website": "https://dim.org"
+    }
+
+    r = client.put(
+        f'{settings.API_V1_STR}/organizations/{master_organization_id}/edit',
+        json=payload,
+        headers=superuser_token_headers
+    )
+
+    assert 200 <= r.status_code < 300
+
+    response = r.json()
+    assert response["website"] == "https://dim.org"
+
+
 def test_remove_organization_member(
         client: TestClient,
         db: Session,

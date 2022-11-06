@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr
@@ -27,8 +28,10 @@ class UserPasswordUpdate(BaseModel):
 
 class UserOut(UserBase):
     id: int
-    organization: Optional[str]
+    last_activity: datetime.datetime
+    organization: Optional[int]
     email_confirmed: bool
+    is_active: bool
     role: str
 
     class Config:
@@ -37,6 +40,9 @@ class UserOut(UserBase):
 
 class UserRepresentation(UserBase):
     id: int
+    last_activity: datetime.datetime
+    email_confirmed: bool
+    is_active: bool
     organization: Optional[int]
 
     class Config:

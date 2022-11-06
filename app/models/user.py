@@ -17,6 +17,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     created_at = Column(DateTime, default=func.now())
+    last_activity = Column(DateTime)
 
     username = Column(String)
     full_name = Column(String, index=True)

@@ -4,9 +4,13 @@
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_location.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/crud/crud_organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/organization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/schemas/organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/organization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/api/test_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_organization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,6 +184,12 @@
       <workItem from="1666892811934" duration="4664000" />
       <workItem from="1667039181347" duration="4531000" />
       <workItem from="1667151692554" duration="1347000" />
+      <workItem from="1667374939903" duration="18000" />
+      <workItem from="1667406783322" duration="10000" />
+      <workItem from="1667416465061" duration="622000" />
+      <workItem from="1667584674570" duration="3338000" />
+      <workItem from="1667648718043" duration="15000" />
+      <workItem from="1667743339804" duration="3689000" />
     </task>
     <servers />
   </component>

@@ -56,6 +56,7 @@ def create_invite(db: Session, *, obj_in: UserInvite) -> Optional[User]:
         role=user_role.verbose_name,
         permissions=user_role.permissions,
         registration_token=create_access_token(subject=obj_in.email, scopes=['users:confirm']),
+        # TODO is this actual now time or server start time? Check this.
         registration_token_expires=datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 

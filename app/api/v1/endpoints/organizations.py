@@ -45,7 +45,6 @@ async def search_organizations_by_name(
                                                     scopes=["organizations:view"])
 ) -> Any:
     organizations = crud.get_by_substr(db, query)
-    print(organizations)
     if not organizations:
         return []
 
@@ -61,6 +60,23 @@ async def get_organization_by_id(organization_id: int, db: Session = Depends(get
         raise HTTPException(status_code=404, detail="Not found")
 
     return organization
+
+
+@router.put('/{organization_id}/edit', response_model=schemas.OrganizationOut)
+async def edit_organization_data(
+        organization_id: int,
+        data: schemas.OrganizationBase,
+        db: Session = Depends(get_db),
+        current_active_user: models.User = Security(get_current_active_user, scopes=['organizations:edit'])
+) -> Any:
+
+    updated_organization = crud.edit_organization(db,
+                                                  organization_id=organization_id,
+                                                  obj_in=data)
+    if not updated_organization:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    return updated_organization
 
 
 @router.put('/{organization_id}/invite', response_model=schemas.OrganizationOut)
