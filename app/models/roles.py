@@ -9,3 +9,29 @@ class Role(Base):
 
     verbose_name = Column(String, nullable=False, unique=True)
     permissions = Column(JSONB, default=[])
+
+
+# TODO class-based approach?
+presets = {
+
+    "aid_worker": [
+        "users:me",
+        "users:edit",
+        "locations:view",
+        "locations:edit"
+    ],
+
+    "platform_administrator": [
+        "users:create",
+        "users:delete"
+        "users:me",
+        "users:edit",
+        "locations:view",
+        "locations:edit",
+        "locations:delete",
+        "organizations:create",
+        "organizations:view",
+        "organizations:edit",
+        "organizations:delete"
+    ]
+}

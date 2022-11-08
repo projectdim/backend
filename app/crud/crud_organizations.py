@@ -63,7 +63,9 @@ def add_members(db: Session, organization_id: int, user_emails: List[str]) -> Or
 
     for user in user_emails:
         db_user = db.query(User).filter(
-            User.email == user, User.email_confirmed == True, User.is_active == True
+            User.email == user,
+            User.email_confirmed == True,
+            User.is_active == True
         ).first()
         if not db_user:
             continue

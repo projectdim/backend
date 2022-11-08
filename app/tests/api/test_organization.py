@@ -115,7 +115,6 @@ def test_delete_organization(
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
-    # TODO FIX
     organization_to_delete = crud.get_by_name(db, "TestOrg")
 
     r = client.delete(

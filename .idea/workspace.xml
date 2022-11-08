@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/crud/crud_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_location.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/crud/crud_organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/crud/crud_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/init_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/roles.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/roles.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests/api/test_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_organization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,6 +44,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.general" />
@@ -189,7 +187,8 @@
       <workItem from="1667416465061" duration="622000" />
       <workItem from="1667584674570" duration="3338000" />
       <workItem from="1667648718043" duration="15000" />
-      <workItem from="1667743339804" duration="3689000" />
+      <workItem from="1667743339804" duration="6164000" />
+      <workItem from="1667923366118" duration="85000" />
     </task>
     <servers />
   </component>

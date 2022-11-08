@@ -13,10 +13,11 @@ router = APIRouter()
 
 
 @router.post('/register', response_model=schemas.UserOut)
-async def register_user(user: schemas.UserCreate,
-                        db: Session = Depends(get_db),
-                        current_active_user: models.User = Security(get_current_active_user,
-                                                                    scopes=['users:create'])) -> Any:
+async def register_user(
+        user: schemas.UserCreate,
+        db: Session = Depends(get_db),
+        current_active_user: models.User = Security(get_current_active_user, scopes=['users:create'])
+) -> Any:
 
     existing_user = crud.get_by_email(db, email=user.email)
     if existing_user:
@@ -33,10 +34,11 @@ async def register_user(user: schemas.UserCreate,
 
 
 @router.post('/invite', response_model=schemas.UserOut)
-async def generate_invite_link(user: schemas.UserInvite,
-                               db: Session = Depends(get_db),
-                               current_active_user: models.User = Security(get_current_active_user,
-                                                                           scopes=['users:create'])) -> Any:
+async def generate_invite_link(
+        user: schemas.UserInvite,
+        db: Session = Depends(get_db),
+        current_active_user: models.User = Security(get_current_active_user, scopes=['users:create'])
+) -> Any:
 
     existing_user = crud.get_by_email(db, email=user.email)
     if existing_user:
@@ -53,9 +55,11 @@ async def generate_invite_link(user: schemas.UserInvite,
 
 
 @router.post('/confirm-registration', response_model=schemas.UserOut)
-async def confirm_user_registration(access_token: str,
-                                    user: schemas.UserCreate,
-                                    db: Session = Depends(get_db)) -> Any:
+async def confirm_user_registration(
+        access_token: str,
+        user: schemas.UserCreate,
+        db: Session = Depends(get_db)
+) -> Any:
 
     new_user = crud.confirm_registration(db, access_token=access_token, obj_in=user)
 
@@ -66,14 +70,19 @@ async def confirm_user_registration(access_token: str,
 
 
 @router.get('/me', response_model=schemas.UserOut)
-async def get_me(current_user: models.User = Depends(get_current_active_user)) -> Any:
+async def get_me(
+        current_user: models.User = Security(get_current_active_user, scopes=['users:me'])
+) -> Any:
+
     return current_user
 
 
 @router.put('/info', response_model=schemas.UserOut)
-async def patch_user_info(updated_info: schemas.UserBase,
-                          current_user: models.User = Depends(get_current_active_user),
-                          db: Session = Depends(get_db)) -> Any:
+async def patch_user_info(
+        updated_info: schemas.UserBase,
+        current_user: models.User = Security(get_current_active_user, scopes=['users:edit']),
+        db: Session = Depends(get_db)
+) -> Any:
 
     updated_user = crud.update_info(db, obj_in=updated_info, user_email=current_user.email)
 
@@ -81,9 +90,11 @@ async def patch_user_info(updated_info: schemas.UserBase,
 
 
 @router.put('/password', response_model=schemas.UserOut)
-async def change_user_password(updated_info: schemas.UserPasswordUpdate,
-                               current_user: models.User = Depends(get_current_active_user),
-                               db: Session = Depends(get_db)) -> Any:
+async def change_user_password(
+        updated_info: schemas.UserPasswordUpdate,
+        current_user: models.User = Security(get_current_active_user, scopes=['users:edit']),
+        db: Session = Depends(get_db)
+) -> Any:
 
     updated_user = crud.update_password(db,
                                         user_email=current_user.email,
@@ -95,9 +106,12 @@ async def change_user_password(updated_info: schemas.UserPasswordUpdate,
     return updated_user
 
 
+# TODO do we need this? Is the edit permission right for such operation (reserved route for tests)
 @router.delete('/delete-me')
-async def delete_me(current_user: models.User = Depends(get_current_active_user),
-                    db: Session = Depends(get_db)) -> Any:
+async def delete_me(
+        current_user: models.User = Security(get_current_active_user, scopes=['users:edit']),
+        db: Session = Depends(get_db)
+) -> Any:
 
     deleted_user = crud.delete_user(db, current_user.id)
 
