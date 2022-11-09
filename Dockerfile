@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM public.ecr.aws/docker/library/python:3.9
 WORKDIR /src
 COPY ./requirements.txt /src/requirements.txt
 COPY ./populate_db.py /src/populate_db.py
