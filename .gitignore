@@ -1,3 +1,4 @@
 /venv
 .env
 .pytest_cache
+*.pyc
