@@ -9,4 +9,7 @@ COPY ./.env /src/.env
 RUN pip install --no-cache-dir --upgrade -r /src/requirements.txt
 COPY ./app /src/app
 CMD ["uvicorn", "app.main:app", "--reload","--host", "0.0.0.0", "--port", "7000"]
+CMD ["alembic", "upgrade", "heads"]
+CMD ["python", "populate_db.py"]
+CMD ["python", "-m",  "pytest"]
 EXPOSE 7000
