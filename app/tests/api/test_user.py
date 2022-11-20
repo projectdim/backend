@@ -116,6 +116,27 @@ def test_patch_user_password(client: TestClient, db: Session, aid_worker_token_h
     assert 200 <= r.status_code < 300
 
 
+def test_user_change_role(
+        client: TestClient,
+        db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
+
+    aid_worker_user = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    assert aid_worker_user
+
+    r = client.put(
+        f'{settings.API_V1_STR}/users/change-role?user_id={aid_worker_user.id}&role=platform_administrator',
+        headers=superuser_token_headers
+    )
+
+    assert 200 <= r.status_code < 300
+
+    response = r.json()
+    print(response)
+    assert response["role"] == "platform_administrator"
+
+
 def test_user_delete_me(client: TestClient, db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
 
     r = client.delete(f"{settings.API_V1_STR}/users/delete-me", headers=aid_worker_token_headers)

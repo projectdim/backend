@@ -7,3 +7,6 @@ class UserRole(BaseModel):
 
     verbose_name: str
     permissions: List[str]
+
+    class Config:
+        orm_mode = True

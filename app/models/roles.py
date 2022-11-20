@@ -23,15 +23,17 @@ presets = {
 
     "platform_administrator": [
         "users:create",
-        "users:delete"
+        "users:delete",
         "users:me",
         "users:edit",
+        "users:roles",
         "locations:view",
         "locations:edit",
         "locations:delete",
         "organizations:create",
         "organizations:view",
         "organizations:edit",
-        "organizations:delete"
+        "organizations:delete",
+        "roles:read"
     ]
 }

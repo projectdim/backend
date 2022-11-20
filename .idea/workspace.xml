@@ -3,11 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/crud/crud_organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/init_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_roles.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_roles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/models/roles.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/roles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/roles.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/roles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests/api/test_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_organization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/api/test_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pre_start.sh" beforeDir="false" afterPath="$PROJECT_DIR$/pre_start.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,6 +194,12 @@
       <workItem from="1667648718043" duration="15000" />
       <workItem from="1667743339804" duration="6164000" />
       <workItem from="1667923366118" duration="85000" />
+      <workItem from="1667944151564" duration="367000" />
+      <workItem from="1668104963985" duration="7000" />
+      <workItem from="1668615196340" duration="238000" />
+      <workItem from="1668619335585" duration="64000" />
+      <workItem from="1668842352557" duration="4633000" />
+      <workItem from="1668972627232" duration="2283000" />
     </task>
     <servers />
   </component>

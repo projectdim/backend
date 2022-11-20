@@ -8,6 +8,8 @@ from app.api.dependencies import get_db, get_current_active_user
 from app import schemas, models
 from app.crud import crud_user as crud
 
+from app.core.config import settings
+
 
 router = APIRouter()
 
@@ -39,6 +41,9 @@ async def generate_invite_link(
         db: Session = Depends(get_db),
         current_active_user: models.User = Security(get_current_active_user, scopes=['users:create'])
 ) -> Any:
+
+    # if user.email == settings.TEST_USER_EMAIL:
+    #     raise HTTPException(status_code=400, detail='This email is reserved.')
 
     existing_user = crud.get_by_email(db, email=user.email)
     if existing_user:
@@ -102,6 +107,22 @@ async def change_user_password(
                                         new_password=updated_info.new_password)
     if not updated_user:
         raise HTTPException(status_code=400, detail='The provided password was incorrect.')
+
+    return updated_user
+
+
+@router.put('/change-role', response_model=schemas.UserOut)
+async def change_user_role(
+        user_id: int,
+        role: str,
+        current_user: models.User = Security(get_current_active_user, scopes=['users:roles']),
+        db: Session = Depends(get_db)
+) -> Any:
+
+    updated_user = crud.change_role(db, user_id=user_id, role=role)
+
+    if not updated_user:
+        raise HTTPException(status_code=400, detail='Cannot update user')
 
     return updated_user
 

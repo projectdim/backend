@@ -24,5 +24,9 @@ def create_role(db: Session, *, obj_in: schemas.UserRole) -> Optional[Role]:
     return db_obj
 
 
+def get_all_roles(db: Session) -> List[Role]:
+    return db.query(Role).all()
+
+
 def get_role_by_name(db: Session, role_name: str) -> Optional[Role]:
     return db.query(Role).filter(Role.verbose_name == role_name).first()

@@ -28,11 +28,13 @@ class UserPasswordUpdate(BaseModel):
 
 class UserOut(UserBase):
     id: int
-    last_activity: datetime.datetime
+    last_activity: Optional[datetime.datetime] = None
     organization: Optional[int]
     email_confirmed: bool
     is_active: bool
     role: str
+    # TODO REMOVE
+    registration_token: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -40,7 +42,7 @@ class UserOut(UserBase):
 
 class UserRepresentation(UserBase):
     id: int
-    last_activity: datetime.datetime
+    last_activity: Optional[datetime.datetime] = None
     email_confirmed: bool
     is_active: bool
     organization: Optional[int]

@@ -101,7 +101,7 @@ def update_info(db: Session, *, obj_in: UserBase, user_email: str) -> User:
 def update_password(db: Session,
                     user_email: str,
                     old_password: str,
-                    new_password: str) -> User:
+                    new_password: str) -> Optional[User]:
 
     user = authenticate(db, email=user_email, password=old_password)
     if not user:
@@ -113,7 +113,32 @@ def update_password(db: Session,
     return user
 
 
-def authenticate(db: Session, *, email: str, password: str) -> Optional[User]:
+def change_role(
+        db: Session,
+        user_id: int,
+        role: str
+) -> Optional[User]:
+
+    user = get(db, user_id=user_id)
+    if not user:
+        return None
+
+    role = get_role_by_name(db, role)
+    if not role:
+        return None
+
+    user.role = role.verbose_name
+    user.permissions = role.permissions
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def authenticate(
+        db: Session, *, email: str, password: str
+) -> Optional[User]:
+
     user = get_by_email(db, email=email)
     if not user:
         return None

@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.crud import crud_organizations as crud
+from app.crud import crud_user as user_crud
 from app.core.config import settings
 
 
@@ -82,15 +83,19 @@ def test_remove_organization_member(
     )
     assert 200 <= r.status_code < 300
 
-    organization = r.json()
-    assert organization["participants"] == []
+    master_user = user_crud.get(db, user_id=superuser_id)
+    assert master_user.organization is None
+
+    # organization = r.json()
+    # assert organization["participants"] == []
 
 
 def test_invite_organization_members(
         client: TestClient,
         db: Session,
         superuser_token_headers: Dict[str, str],
-        master_organization_id: int
+        master_organization_id: int,
+        superuser_id: int
 ) -> None:
 
     payload = {
@@ -106,7 +111,9 @@ def test_invite_organization_members(
 
     organization = r.json()
     assert organization["participants"]
-    assert organization["participants"][0]["email"] == settings.FIRST_SUPERUSER
+
+    master_user = user_crud.get(db, user_id=superuser_id)
+    assert master_user.organization == master_organization_id
 
 
 def test_delete_organization(
