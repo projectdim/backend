@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
 from app.models.organization import Organization
@@ -31,7 +31,7 @@ def get_by_name(db: Session, name: str) -> Optional[Organization]:
 
 
 def get_by_substr(db: Session, name: str) -> List[Organization]:
-    return db.query(Organization).filter(Organization.name.startswith(name)).all()
+    return db.query(Organization).filter(func.lower(Organization.name).startswith(name)).all()
 
 
 def get_organizations_list(db: Session, limit: int = 20, skip: int = 0) -> List[Organization]:

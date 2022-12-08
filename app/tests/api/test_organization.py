@@ -69,6 +69,20 @@ def test_edit_organization(
     assert response["website"] == "https://dim.org"
 
 
+def test_search_organization(
+        client: TestClient,
+        db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
+
+    r = client.get(f'{settings.API_V1_STR}/organizations/search?query=Di', headers=superuser_token_headers)
+
+    assert 200 <= r.status_code < 300
+
+    response = r.json()
+    assert response[0]['name'] == "DIM"
+
+
 def test_remove_organization_member(
         client: TestClient,
         db: Session,

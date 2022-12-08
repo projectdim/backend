@@ -56,6 +56,8 @@ def test_confirm_user_invite(client: TestClient, db: Session) -> None:
 def test_get_me(client: TestClient, aid_worker_token_headers: Dict[str, str]) -> None:
     r = client.get(f"{settings.API_V1_STR}/users/me", headers=aid_worker_token_headers)
 
+    assert 200 <= r.status_code < 300
+
     current_user = r.json()
     assert current_user
     assert current_user["email"] == settings.TEST_USER_EMAIL
