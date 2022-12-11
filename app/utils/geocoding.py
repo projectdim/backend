@@ -2,8 +2,7 @@ from typing import Any
 
 from geopy.geocoders import GoogleV3, Nominatim
 
-# TODO REMOVE APIKEY TO ENV
-# loc = GoogleV3(api_key="AIzaSyBmAcISYICCUrXDzJAkhxCPcvF0hkn6iUo")
+
 geocoder = Nominatim(user_agent="GetLoc")
 
 
