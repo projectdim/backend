@@ -24,7 +24,8 @@ class Location(Base):
     reported_by = Column(Integer, ForeignKey('user.id', ondelete="SET NULL"))
     status = Column(Integer, default=1)
 
-    address = Column(String, nullable=False, unique=True)
+    address = Column(String, unique=True)
+    street_number = Column(String)
     city = Column(String)
     country = Column(String)
     index = Column(Integer, nullable=False)

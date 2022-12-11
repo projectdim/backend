@@ -34,6 +34,15 @@ def test_request_location_info(client: TestClient, db: Session) -> None:
     assert geospatial_record.geohash
 
 
+def test_get_location_by_address(client: TestClient, db: Session) -> None:
+
+    r = client.get(f'{settings.API_V1_STR}/locations/search-by-name?address=вул. Стеценко, 64')
+    assert 200 <= r.status_code < 300
+
+    requested_location = r.json()
+    assert requested_location.address == "вул. Стеценко, 64"
+
+
 def test_get_location_by_coords(client: TestClient, db: Session) -> None:
 
     # Querying the previously created location

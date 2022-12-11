@@ -6,3 +6,4 @@ from .session import UserSession
 from .organization import OrganizationBase, OrganizationOut, OrganizationUserInvite
 from .changelog import ChangelogOut
 from .roles import UserRole
+from .zone import ZoneBase

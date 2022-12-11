@@ -19,12 +19,12 @@ class LocationBase(BaseModel):
 
 
 class LocationCreate(LocationBase):
-    address: str
+    address: Optional[str] = None
     lat: float
     lng: float
-    index: int
-    city: str
-    country: str
+    index: Optional[int] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
 
 
 class LocationSearch(LocationBase):
@@ -35,18 +35,18 @@ class LocationSearch(LocationBase):
 class TestLocationSearch(BaseModel):
     lat: float
     lng: float
-    zoom: int
+    zoom: Optional[int]
 
 
 class LocationOut(BaseModel):
     id: int
     created_at: datetime
     updated_at: datetime
-    address: str
-    index: str
-    city: str
+    address: Optional[str] = None
+    index: Optional[str] = None
+    city: Optional[str] = None
     status: int
-    country: str
+    country: Optional[str] = None
     position: Dict
     reports: Optional[Dict] = None
     distance: Optional[int] = None

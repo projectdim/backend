@@ -9,6 +9,7 @@ from app import schemas, models
 from app.crud import crud_location as crud
 from app.crud import crud_changelogs as logs_crud
 from app.crud import crud_geospatial as geo_crud
+from app.utils import geocoding
 
 router = APIRouter()
 
@@ -29,6 +30,17 @@ async def create_location(location: schemas.LocationCreate, db: Session = Depend
 async def get_location(lat: float, lng: float, db: Session = Depends(get_db)) -> Any:
 
     location = crud.get_location_by_coordinates(db, lat, lng)
+
+    if not location:
+        raise HTTPException(status_code=400, detail="Not found")
+
+    return location.to_json()
+
+
+@router.get('/search-by-address')
+async def get_location_by_address(address: str, db: Session = Depends(get_db)) -> Any:
+
+    location = crud.get_location_by_address(db, location_address=address)
 
     if not location:
         raise HTTPException(status_code=400, detail="Not found")
@@ -67,6 +79,31 @@ async def get_location_changelogs(location_id: int, db: Session = Depends(get_db
     logs = logs_crud.get_changelogs(db, location_id)
 
     return logs
+
+
+@router.post('/request-info-test')
+async def request_info_test(location: schemas.LocationCreate, db: Session = Depends(get_db)) -> Any:
+
+    existing_location = crud.get_location_by_coordinates(db, location.lat, location.lng)
+
+    if existing_location:
+        raise HTTPException(status_code=400, detail="Review request for this location was already sent")
+
+    address = geocoding.reverse(location.lat, location.lng)
+    if not address:
+        raise HTTPException(status_code=400, detail="Cannot get the address of this locatiom, please check you query")
+
+    location_to_review = crud.create_location_review_request_test(
+        db,
+        address=address,
+        lat=location.lat,
+        lng=location.lng
+    )
+
+    if not location_to_review:
+        raise HTTPException(status_code=500, detail="Cannot connect to the database, please try again")
+
+    return location_to_review.to_json()
 
 
 @router.post('/request-info')

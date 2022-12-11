@@ -3,12 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/crud/crud_organizations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_organizations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/enums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/locations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/locations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_location.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_roles.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_roles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/init_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/location.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/roles.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/roles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/location.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests/api/test_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/api/test_organization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_organization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/api/test_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_user.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +211,10 @@
       <workItem from="1670345183318" duration="1263000" />
       <workItem from="1670432146627" duration="608000" />
       <workItem from="1670443548216" duration="2108000" />
-      <workItem from="1670517048855" duration="3966000" />
+      <workItem from="1670517048855" duration="4612000" />
+      <workItem from="1670615859773" duration="35000" />
+      <workItem from="1670675740839" duration="4129000" />
+      <workItem from="1670770132117" duration="7971000" />
     </task>
     <servers />
   </component>

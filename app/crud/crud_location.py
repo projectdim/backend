@@ -43,6 +43,33 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         return None
 
 
+def create_location_review_request_test(db: Session, *, address: dict, lat: float, lng: float) -> Optional[Location]:
+
+    try:
+        db_obj = Location(
+            address=address.get('road', None),
+            street_number=address.get('house_number', None),
+            city=address.get('city', address.get('village', None)),
+            country=address.get('country', None),
+            index=address.get('postcode', None),
+            lat=lat,
+            lng=lng,
+            status=1
+        )
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+
+        index = create_index(db, location_id=db_obj.id, lat=lat, lng=lng, status=db_obj.status)
+
+        return db_obj
+
+    except Exception as e:
+        print(e)
+        return None
+
+
+
 def create_location_review_request(db: Session, *, obj_in: LocationCreate) -> Optional[Location]:
 
     try:
@@ -75,6 +102,11 @@ def get_location_by_id(db: Session, location_id: int) -> Location:
 
 def get_location_by_coordinates(db: Session, lat: float, lng: float) -> Location:
     return db.query(Location).filter(Location.lat == lat, Location.lng == lng).first()
+
+
+def get_location_by_address(db: Session, location_address: str) -> Location:
+
+    return db.query(Location).filter(Location.address == location_address).first()
 
 
 def get_locations_awaiting_reports_count(db: Session) -> int:
