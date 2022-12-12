@@ -1,6 +1,8 @@
 from typing import Any
 
 from geopy.geocoders import GoogleV3, Nominatim
+import osmnx as ox
+from shapely.geometry import Point
 
 
 geocoder = Nominatim(user_agent="GetLoc")
@@ -17,3 +19,19 @@ def reverse(lat: float, lng: float) -> Any:
     except Exception as e:
         print(e)
         return None
+
+
+def get_bounding_box_by_region_name(region_name: str):
+
+    try:
+        gdf = ox.geocode_to_gdf(region_name)
+        geom = gdf.loc[0, 'geometry']
+        return geom
+
+    except ValueError:
+        return None
+
+
+def check_intersection(geom, coords):
+    return geom.intersects(Point(coords))
+

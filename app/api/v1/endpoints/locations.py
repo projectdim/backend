@@ -9,6 +9,7 @@ from app import schemas, models
 from app.crud import crud_location as crud
 from app.crud import crud_changelogs as logs_crud
 from app.crud import crud_geospatial as geo_crud
+from app.crud import crud_zones as zone_crud
 from app.utils import geocoding
 
 router = APIRouter()
@@ -81,45 +82,50 @@ async def get_location_changelogs(location_id: int, db: Session = Depends(get_db
     return logs
 
 
-@router.post('/request-info-test')
-async def request_info_test(location: schemas.LocationCreate, db: Session = Depends(get_db)) -> Any:
+@router.post('/request-info')
+async def request_location_review(
+        location: schemas.LocationCreate,
+        db: Session = Depends(get_db)
+) -> Any:
 
     existing_location = crud.get_location_by_coordinates(db, location.lat, location.lng)
-
     if existing_location:
         raise HTTPException(status_code=400, detail="Review request for this location was already sent")
 
     address = geocoding.reverse(location.lat, location.lng)
     if not address:
-        raise HTTPException(status_code=400, detail="Cannot get the address of this locatiom, please check you query")
+        raise HTTPException(status_code=400, detail="Cannot get the address of this location, please check you query")
 
-    location_to_review = crud.create_location_review_request_test(
+    restricted_intersection = zone_crud.check_new_point_intersections(db, location.lng, location.lat)
+    if restricted_intersection:
+        raise HTTPException(status_code=403, detail="Locations in this area are restricted")
+
+    location_to_review = crud.create_location_review_request(
         db,
         address=address,
         lat=location.lat,
         lng=location.lng
     )
-
     if not location_to_review:
         raise HTTPException(status_code=500, detail="Cannot connect to the database, please try again")
 
     return location_to_review.to_json()
 
 
-@router.post('/request-info')
-async def request_location_review(location: schemas.LocationCreate, db: Session = Depends(get_db)) -> Any:
-
-    existing_location = crud.get_location_by_coordinates(db, location.lat, location.lng)
-
-    if existing_location:
-        raise HTTPException(status_code=400, detail="Review request for this location was already sent")
-
-    location_to_review = crud.create_location_review_request(db, obj_in=location)
-
-    if not location_to_review:
-        raise HTTPException(status_code=500, detail="Cannot connect to the database, please try again")
-
-    return location_to_review.to_json()
+# @router.post('/request-info')
+# async def request_location_review(location: schemas.LocationCreate, db: Session = Depends(get_db)) -> Any:
+#
+#     existing_location = crud.get_location_by_coordinates(db, location.lat, location.lng)
+#
+#     if existing_location:
+#         raise HTTPException(status_code=400, detail="Review request for this location was already sent")
+#
+#     location_to_review = crud.create_location_review_request(db, obj_in=location)
+#
+#     if not location_to_review:
+#         raise HTTPException(status_code=500, detail="Cannot connect to the database, please try again")
+#
+#     return location_to_review.to_json()
 
 
 @router.get('/pending-count')

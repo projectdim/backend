@@ -11,6 +11,7 @@ from app.schemas import report
 
 class LocationBase(BaseModel):
     address: Optional[str] = None
+    street_number: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
     index: Optional[int] = None
@@ -19,12 +20,12 @@ class LocationBase(BaseModel):
 
 
 class LocationCreate(LocationBase):
-    address: Optional[str] = None
+    # address: Optional[str] = None
     lat: float
     lng: float
-    index: Optional[int] = None
-    city: Optional[str] = None
-    country: Optional[str] = None
+    # index: Optional[int] = None
+    # city: Optional[str] = None
+    # country: Optional[str] = None
 
 
 class LocationSearch(LocationBase):
@@ -43,6 +44,7 @@ class LocationOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     address: Optional[str] = None
+    street_number: Optional[str] = None
     index: Optional[str] = None
     city: Optional[str] = None
     status: int
@@ -63,6 +65,8 @@ class LocationAdmin(LocationOut):
 # TODO convert to dataclasses with default vals
 class LocationReports(BaseModel):
     location_id: int
+    street_number: Optional[str] = None
+    address: Optional[str] = None
     buildingCondition: report.BuildingReport
     electricity: report.ElectricityReport
     carEntrance: report.CarEntranceReport
