@@ -38,17 +38,6 @@ async def get_location(lat: float, lng: float, db: Session = Depends(get_db)) ->
     return location.to_json()
 
 
-@router.get('/search-by-address')
-async def get_location_by_address(address: str, db: Session = Depends(get_db)) -> Any:
-
-    location = crud.get_location_by_address(db, location_address=address)
-
-    if not location:
-        raise HTTPException(status_code=400, detail="Not found")
-
-    return location.to_json()
-
-
 @router.post('/cord_search')
 async def get_locations_by_coordinates(coordinates: schemas.TestLocationSearch, db: Session = Depends(get_db)) -> Any:
 

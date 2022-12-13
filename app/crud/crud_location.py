@@ -103,11 +103,6 @@ def get_location_by_coordinates(db: Session, lat: float, lng: float) -> Location
     return db.query(Location).filter(Location.lat == lat, Location.lng == lng).first()
 
 
-def get_location_by_address(db: Session, location_address: str) -> Location:
-
-    return db.query(Location).filter(Location.address == location_address).first()
-
-
 def get_locations_awaiting_reports_count(db: Session) -> int:
     return db.query(Location).filter(Location.status == 1, Location.reported_by == None).count()
 
@@ -168,11 +163,16 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     if not location:
         return None
 
-    if not location.address:
+    # if not location.address:
+    if obj_in.address:
         location.address = obj_in.address
 
-    if not location.street_number:
+    # if not location.street_number:
+    if obj_in.street_number:
         location.street_number = obj_in.street_number
+
+    if obj_in.city:
+        location.city = obj_in.city
 
     reports = {
         "buildingCondition": obj_in.buildingCondition,
@@ -214,6 +214,10 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     # TODO rollback strategy if no changelog was created
 
     return location
+
+
+def get_activity_feed(db: Session, records: int = 10) -> List[Location]:
+    return db.query(Location).order_by(desc(Location.created_at)).limit(records)
 
 
 def delete_location(db: Session, location_id: int) -> Optional[Location]:

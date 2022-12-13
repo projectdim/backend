@@ -1,3 +1,5 @@
+from typing import Optional, List
+
 from sqlalchemy.orm import Session
 from shapely import wkt
 
@@ -20,7 +22,7 @@ def add_restricted_zone(db: Session, zone_type: int, zone_name: str, bbox: str):
         return db_obj
 
     except Exception as e:
-        print(e)
+        print('Zone add exception: {}'.format(e))
         return None
 
 
@@ -42,3 +44,21 @@ def check_new_point_intersections(db: Session, lng: float, lat: float) -> bool:
     except Exception as e:
         print('Zone checking exception: {}'.format(e))
         return True
+
+
+def get_zone_by_verbose_name(db: Session, zone_name: str) -> Zone:
+    return db.query(Zone).filter(Zone.verbose_name == zone_name).first()
+
+
+def get_all_restricted_zones(db: Session) -> List[Zone]:
+    return db.query(Zone).all()
+
+
+def allow_zone(db: Session, zone_id: int) -> Optional[Zone]:
+    zone_to_delete = db.query(Zone).get(zone_id)
+    if not zone_to_delete:
+        return None
+
+    db.delete(zone_to_delete)
+    db.commit()
+    return zone_to_delete

@@ -24,7 +24,7 @@ class Location(Base):
     reported_by = Column(Integer, ForeignKey('user.id', ondelete="SET NULL"))
     status = Column(Integer, default=1)
 
-    address = Column(String, unique=True)
+    address = Column(String)
     street_number = Column(String)
     city = Column(String)
     country = Column(String)
@@ -37,7 +37,6 @@ class Location(Base):
         geolocation_coords = (user_lat, user_lng)
         location_coords = (self.lat, self.lng)
 
-        print(geopy.distance.geodesic(geolocation_coords, location_coords).km)
         return geopy.distance.geodesic(geolocation_coords, location_coords).km
 
     def to_json(self, user_lat=None, user_lng=None):
@@ -53,6 +52,7 @@ class Location(Base):
             "position": {
               "lat": self.lat, "lng": self.lng
             },
+            "street_number": self.street_number,
             "distance": self.calculate_distance(user_lat, user_lng) if user_lat and user_lng else None,
             "reported_by": self.reported_by,
             "report_expires": self.report_expires,

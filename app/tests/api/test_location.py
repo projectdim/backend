@@ -10,16 +10,38 @@ from app.core.config import settings
 from app.utils.populate_db import populate_reports
 
 
-def test_request_location_info(client: TestClient, db: Session) -> None:
+# def test_request_location_info(client: TestClient, db: Session) -> None:
+#
+#     # A sample location in Vinnitsya
+#     payload = {
+#         "address": "вул. Стеценко, 64",
+#         "lat": 49.24003079548452,
+#         "lng": 28.480316724096923,
+#         "index": 21000,
+#         "city": "Вінниця",
+#         "country": "Україна"
+#     }
+#
+#     r = client.post(f"{settings.API_V1_STR}/locations/request-info", json=payload)
+#     assert 200 <= r.status_code < 300
+#
+#     requested_location = r.json()
+#     location = location_crud.get_location_by_id(db, location_id=requested_location['id'])
+#     assert location.status == 1
+#     assert location.address == requested_location["address"]
+#     geospatial_record = geo_crud.search_index_by_location_id(db, location_id=location.id)
+#     assert geospatial_record
+#     assert geospatial_record.geohash
 
-    # A sample location in Vinnitsya
+
+def test_request_location_info(
+        client: TestClient,
+        db: Session
+) -> None:
+
     payload = {
-        "address": "вул. Стеценко, 64",
         "lat": 49.24003079548452,
-        "lng": 28.480316724096923,
-        "index": 21000,
-        "city": "Вінниця",
-        "country": "Україна"
+        "lng": 28.480316724096923
     }
 
     r = client.post(f"{settings.API_V1_STR}/locations/request-info", json=payload)
@@ -28,19 +50,10 @@ def test_request_location_info(client: TestClient, db: Session) -> None:
     requested_location = r.json()
     location = location_crud.get_location_by_id(db, location_id=requested_location['id'])
     assert location.status == 1
-    assert location.address == requested_location["address"]
+    assert requested_location['address'] == location.address
     geospatial_record = geo_crud.search_index_by_location_id(db, location_id=location.id)
     assert geospatial_record
     assert geospatial_record.geohash
-
-
-def test_get_location_by_address(client: TestClient, db: Session) -> None:
-
-    r = client.get(f'{settings.API_V1_STR}/locations/search-by-name?address=вул. Стеценко, 64')
-    assert 200 <= r.status_code < 300
-
-    requested_location = r.json()
-    assert requested_location.address == "вул. Стеценко, 64"
 
 
 def test_get_location_by_coords(client: TestClient, db: Session) -> None:
@@ -60,6 +73,7 @@ def test_pending_location_count(client: TestClient, db: Session, superuser_token
 
     location_count = r.json()
     assert "count" in location_count
+    assert location_count["count"] > 0
 
 
 def test_get_pending_locations(client: TestClient, db: Session, superuser_token_headers: Dict[str, str]) -> None:
@@ -67,6 +81,10 @@ def test_get_pending_locations(client: TestClient, db: Session, superuser_token_
     # TODO testing with the user geolocation?
     r = client.get(f"{settings.API_V1_STR}/locations/location-requests", headers=superuser_token_headers)
     assert 200 <= r.status_code < 300
+
+    pending_locations = r.json()
+    assert isinstance(pending_locations, list)
+    assert len(pending_locations) > 0
 
 
 def test_assign_location(
@@ -76,11 +94,6 @@ def test_assign_location(
         location_id: int,
         superuser_id: int
 ) -> None:
-
-    r = client.get(f"{settings.API_V1_STR}/locations/location-requests", headers=superuser_token_headers)
-    assert 200 <= r.status_code < 300
-    pending_locations = r.json()
-    assert pending_locations
 
     r = client.put(f"{settings.API_V1_STR}/locations/assign-location?location_id={location_id}", headers=superuser_token_headers)
     assert 200 <= r.status_code < 300
@@ -114,13 +127,9 @@ def test_remove_assigned_location(
         location_id: int
 ) -> None:
 
-    r = client.get(f"{settings.API_V1_STR}/locations/assigned-locations", headers=superuser_token_headers)
-    assert 200 <= r.status_code < 300
-    assigned_locations = r.json()
-    assert assigned_locations
-
     r = client.put(f"{settings.API_V1_STR}/locations/remove-assignment?location_id={location_id}", headers=superuser_token_headers)
     assert 200 <= r.status_code < 300
+
     pending_location = r.json()
     assert pending_location['reported_by'] is None
     assert pending_location["report_expires"] is None
@@ -155,8 +164,6 @@ def test_submit_location_report(
 
 def test_get_location_info(client: TestClient, db: Session, location_id: int) -> None:
 
-    locations = location_crud.get_all_locations(db)
-
     r = client.get(f'{settings.API_V1_STR}/locations/location-info?location_id={location_id}')
     assert 200 <= r.status_code < 300
     requested_location = r.json()
@@ -167,7 +174,6 @@ def test_get_location_info(client: TestClient, db: Session, location_id: int) ->
 
 
 def test_get_location_changelogs(client: TestClient, db: Session, location_id: int) -> None:
-    locations = location_crud.get_all_locations(db)
 
     r = client.get(f'{settings.API_V1_STR}/locations/changelogs?location_id={location_id}')
     assert 200 <= r.status_code < 300
@@ -178,13 +184,59 @@ def test_get_location_changelogs(client: TestClient, db: Session, location_id: i
         assert log["new_flags"]
 
 
-def test_remove_location(client: TestClient, db: Session, superuser_token_headers: Dict[str, str], location_id: int) -> None:
-    locations = location_crud.get_all_locations(db)
+def test_remove_location(
+        client: TestClient,
+        db: Session,
+        superuser_token_headers: Dict[str, str],
+        location_id: int
+) -> None:
 
-    r = client.delete(f'{settings.API_V1_STR}/locations/remove-location?location_id={location_id}', headers=superuser_token_headers)
+    r = client.delete(
+        f'{settings.API_V1_STR}/locations/remove-location?location_id={location_id}',
+        headers=superuser_token_headers
+    )
     assert 200 <= r.status_code < 300
-    # deleted_location = r.json()
-    #
-    # location_in_db = location_crud.get_location_by_id(db, location_id=location_id)
-    # print(location_in_db)
-    # assert location_in_db is None
+
+
+def test_request_location_without_valid_address(
+        client: TestClient,
+        db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
+
+    # create a sample location somewhere near Lviv
+    payload = {
+        "lat": 50.0111909,
+        "lng": 24.0506995
+    }
+    r = client.post(f'{settings.API_V1_STR}/locations/request-info', json=payload)
+    assert 200 <= r.status_code < 300
+
+    requested_location = r.json()
+    assert requested_location["address"] is None
+    assert requested_location["street_number"] is None
+
+    # submit the reports with the updated location data
+    random_reports = populate_reports()
+    random_reports["location_id"] = requested_location["id"]
+    random_reports["street_number"] = "1"
+    random_reports["address"] = "Вулиця Тестова"
+
+    r = client.put(
+        f"{settings.API_V1_STR}/locations/submit-report",
+        json=random_reports,
+        headers=superuser_token_headers
+    )
+    assert 200 <= r.status_code < 300
+
+    updated_location = r.json()
+    assert updated_location["address"] == "Вулиця Тестова"
+    assert updated_location["street_number"] == "1"
+    assert updated_location["status"] == 3
+
+    # delete the location
+    location_crud.delete_location(db, updated_location['id'])
+
+
+
+

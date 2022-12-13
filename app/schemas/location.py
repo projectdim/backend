@@ -67,6 +67,7 @@ class LocationReports(BaseModel):
     location_id: int
     street_number: Optional[str] = None
     address: Optional[str] = None
+    city: Optional[str] = None
     buildingCondition: report.BuildingReport
     electricity: report.ElectricityReport
     carEntrance: report.CarEntranceReport
