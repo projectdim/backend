@@ -52,14 +52,16 @@ class LocationOut(BaseModel):
     position: Dict
     reports: Optional[Dict] = None
     distance: Optional[int] = None
+    reported_by: Optional[int] = None
+    report_expires: Optional[datetime] = None
 
     class Config:
         orm_mode = True
 
 
 class LocationAdmin(LocationOut):
-    reported_by: int
-    report_expires: datetime
+    reported_by: Optional[int] = None
+    report_expires: Optional[datetime] = None
 
 
 # TODO convert to dataclasses with default vals
@@ -68,6 +70,7 @@ class LocationReports(BaseModel):
     street_number: Optional[str] = None
     address: Optional[str] = None
     city: Optional[str] = None
+    index: Optional[int] = None
     buildingCondition: report.BuildingReport
     electricity: report.ElectricityReport
     carEntrance: report.CarEntranceReport

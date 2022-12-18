@@ -56,7 +56,6 @@ def create_invite(db: Session, *, obj_in: UserInvite) -> Optional[User]:
         role=user_role.verbose_name,
         permissions=user_role.permissions,
         registration_token=create_access_token(subject=obj_in.email, scopes=['users:confirm']),
-        # TODO is this actual now time or server start time? Check this.
         registration_token_expires=datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
@@ -66,10 +65,18 @@ def create_invite(db: Session, *, obj_in: UserInvite) -> Optional[User]:
     return db_obj
 
 
-def confirm_registration(db: Session, *, access_token: str, obj_in: UserCreate) -> Optional[User]:
+def verify_registration_token(db: Session, access_token: str) -> Optional[User]:
     invited_user = db.query(User).filter(User.registration_token == access_token).first()
 
-    # TODO CHECK IF TOKEN NOT EXPIRED
+    if not invited_user or datetime.now() > invited_user.registration_token_expires:
+        return None
+
+    return invited_user
+
+
+def confirm_registration(db: Session, *, access_token: str, obj_in: UserCreate) -> Optional[User]:
+
+    invited_user = verify_registration_token(db, access_token)
     if not invited_user:
         return None
 
@@ -111,6 +118,44 @@ def update_password(db: Session,
     db.commit()
     db.refresh(user)
     return user
+
+
+def reset_password(
+        db: Session,
+        user_email: str
+) -> Optional[User]:
+
+    user = get_by_email(db, email=user_email)
+    if not user:
+        return None
+
+    user.password_renewal_token = create_access_token(subject=user_email, scopes=['users:me'])
+    user.password_renewal_token_expires = datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def confirm_password_reset(
+        db: Session,
+        renewal_token: str,
+        new_password: str
+) -> Optional[User]:
+
+    user = db.query(User).filter(User.password_renewal_token == renewal_token).first()
+
+    if not user or datetime.now() > user.password_renewal_token_expires:
+        return None
+
+    user.hashed_password = get_password_hash(new_password)
+    user.password_renewal_token = None
+    user.password_renewal_token_expires = None
+
+    db.commit()
+    db.refresh(user)
+    return user
+
 
 
 def change_role(

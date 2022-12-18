@@ -184,18 +184,18 @@ def test_get_location_changelogs(client: TestClient, db: Session, location_id: i
         assert log["new_flags"]
 
 
-def test_remove_location(
-        client: TestClient,
-        db: Session,
-        superuser_token_headers: Dict[str, str],
-        location_id: int
-) -> None:
-
-    r = client.delete(
-        f'{settings.API_V1_STR}/locations/remove-location?location_id={location_id}',
-        headers=superuser_token_headers
-    )
-    assert 200 <= r.status_code < 300
+# def test_remove_location(
+#         client: TestClient,
+#         db: Session,
+#         superuser_token_headers: Dict[str, str],
+#         location_id: int
+# ) -> None:
+#
+#     r = client.delete(
+#         f'{settings.API_V1_STR}/locations/remove-location?location_id={location_id}',
+#         headers=superuser_token_headers
+#     )
+#     assert 200 <= r.status_code < 300
 
 
 def test_request_location_without_valid_address(

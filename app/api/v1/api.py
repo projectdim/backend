@@ -7,6 +7,7 @@ from app.api.v1.endpoints import sessions
 from app.api.v1.endpoints import organizations
 from app.api.v1.endpoints import roles
 from app.api.v1.endpoints import zones
+from app.api.v1.endpoints import guest_user
 
 api_router = APIRouter()
 
@@ -17,3 +18,4 @@ api_router.include_router(organizations.router, prefix='/organizations', tags=["
 api_router.include_router(sessions.router, prefix='/sessions', tags=['sessions'])
 api_router.include_router(roles.router, prefix='/roles', tags=['roles'])
 api_router.include_router(zones.router, prefix='/zones', tags=['zones'])
+api_router.include_router(guest_user.router, prefix='/guest', tags=['guest-user'])

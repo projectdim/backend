@@ -174,6 +174,9 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     if obj_in.city:
         location.city = obj_in.city
 
+    if obj_in.index:
+        location.index = obj_in.index
+
     reports = {
         "buildingCondition": obj_in.buildingCondition,
         "electricity": obj_in.electricity,

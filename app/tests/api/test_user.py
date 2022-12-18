@@ -135,8 +135,45 @@ def test_user_change_role(
     assert 200 <= r.status_code < 300
 
     response = r.json()
-    print(response)
     assert response["role"] == "platform_administrator"
+
+
+def test_user_password_reset(
+        client: TestClient,
+        db: Session,
+        aid_worker_token_headers: Dict[str, str]
+) -> None:
+
+    r = client.put(f'{settings.API_V1_STR}/users/password-reset?user_email={settings.TEST_USER_EMAIL}')
+
+    assert 200 <= r.status_code < 300
+
+    aid_worker = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    assert aid_worker.password_renewal_token
+    assert aid_worker.password_renewal_token_expires
+
+    payload = {
+        "access_token": aid_worker.password_renewal_token,
+        "new_password": settings.TEST_USER_PASSWORD
+    }
+
+    reset_r = client.put(f'{settings.API_V1_STR}/users/confirm-reset', json=payload)
+    assert 200 <= reset_r.status_code < 300
+
+    login_payload = {
+        "username": settings.TEST_USER_EMAIL,
+        "password": settings.TEST_USER_PASSWORD
+    }
+
+    login_request = client.post(f"{settings.API_V1_STR}/auth/login/token", data=login_payload)
+    assert 200 <= login_request.status_code < 300
+
+    # TODO user is somehow bound to the old session and is not refreshed.
+    #  Find a way to verify that tokens and expire time is null
+
+    # db_user = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    # assert not db_user.password_renewal_token
+    # assert not db_user.password_renewal_token_expires
 
 
 def test_user_delete_me(client: TestClient, db: Session, aid_worker_token_headers: Dict[str, str]) -> None:

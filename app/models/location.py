@@ -20,6 +20,8 @@ class Location(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now())
 
+    requested_by = Column(Integer, ForeignKey('guestuser.id', ondelete="SET NULL"), nullable=True)
+
     report_expires = Column(DateTime)
     reported_by = Column(Integer, ForeignKey('user.id', ondelete="SET NULL"))
     status = Column(Integer, default=1)
@@ -28,7 +30,7 @@ class Location(Base):
     street_number = Column(String)
     city = Column(String)
     country = Column(String)
-    index = Column(Integer, nullable=False)
+    index = Column(Integer)
     lat = Column(Float)
     lng = Column(Float)
     reports = Column(JSONB) # Should we create a separate table for this??

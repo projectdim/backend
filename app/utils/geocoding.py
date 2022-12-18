@@ -8,6 +8,18 @@ from shapely.geometry import Point
 geocoder = Nominatim(user_agent="GetLoc")
 
 
+def geocode_address(address: str, city: str) -> Any:
+
+    try:
+        coordinates = geocoder.geocode('{}, {}'.format(address, city), country_codes='ua')
+        print(coordinates)
+        return coordinates
+
+    except Exception as e:
+        print(e)
+        return None
+
+
 def reverse(lat: float, lng: float) -> Any:
 
     try:
