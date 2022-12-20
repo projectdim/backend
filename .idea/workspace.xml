@@ -2,10 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/location.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/guest_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/guest_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/locations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/locations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/crud/crud_basic_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_basic_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/guest_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/guest_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/schemas/guest_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/guest_user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/utils/bulk_locations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/bulk_locations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/geocoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/geocoding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/email_sender.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/email_sender.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/email_templates.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/email_templates.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/sms_sender.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/sms_sender.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +60,7 @@
       <recent name="E:\pycharm\gmaps-v1.0" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\pycharm\gmaps\app\utils" />
       <recent name="E:\pycharm\gmaps-v1.0\app\utils" />
       <recent name="E:\pycharm\gmaps-v1.0" />
     </key>
@@ -298,6 +307,7 @@
     <SUITE FILE_PATH="coverage/gmaps_v1_0$main.coverage" NAME="main Coverage Results" MODIFIED="1665244473053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/gmaps$populate_db.coverage" NAME="populate_db Coverage Results" MODIFIED="1666013928138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/gmaps$.coverage" NAME=" Coverage Results" MODIFIED="1666013723918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests/api" />
+    <SUITE FILE_PATH="coverage/gmaps$bulk_locations.coverage" NAME="bulk_locations Coverage Results" MODIFIED="1671539754415" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
     <SUITE FILE_PATH="coverage/gmaps_v1_0$bulk_locations.coverage" NAME="bulk_locations Coverage Results" MODIFIED="1671482922241" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
     <SUITE FILE_PATH="coverage/gmaps_v1_0$sms_sender.coverage" NAME="sms_sender Coverage Results" MODIFIED="1671272154212" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
   </component>

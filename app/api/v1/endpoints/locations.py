@@ -1,6 +1,8 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException, Security, status, Response
+from fastapi import APIRouter, Depends, HTTPException, Security, status, Response, UploadFile, File
+
+import aiofiles
 
 from sqlalchemy.orm import Session
 
@@ -202,3 +204,27 @@ async def remove_location(location_id: int,
         raise HTTPException(status_code=400, detail='Cannot perform such operation')
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post('/bulk-add')
+async def bulk_add_locations(
+    sheet_type: int,
+    file: UploadFile = File(...),
+    current_user: models.User = Security(get_current_active_user,
+                                         scopes=['locations:delete'])
+) -> Any:
+
+    from app.utils.bulk_locations import bulk_create
+
+    filepath = f"app/datasets/{file.filename}"
+
+    async with aiofiles.open(filepath, "wb") as file_object:
+        content = await file.read()
+        await file_object.write(content)
+
+    op_status = bulk_create(spreadsheet_path=filepath, sheet_type=sheet_type)
+
+    if not op_status:
+        raise HTTPException(status_code=400, detail=op_status)
+
+    return Response(status_code=status.HTTP_201_CREATED)
