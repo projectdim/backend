@@ -5,6 +5,7 @@ from sqlalchemy.sql import func
 import geopy.distance
 
 from app.db.base_class import Base
+from app.models.guest_user import GuestUser
 
 status_list = {
     1: "Awaiting review",
@@ -20,7 +21,7 @@ class Location(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now())
 
-    requested_by = Column(Integer, ForeignKey('guestuser.id', ondelete="SET NULL"), nullable=True)
+    requested_by = Column(Integer, ForeignKey(GuestUser.id, ondelete="SET NULL"), nullable=True)
 
     report_expires = Column(DateTime)
     reported_by = Column(Integer, ForeignKey('user.id', ondelete="SET NULL"))

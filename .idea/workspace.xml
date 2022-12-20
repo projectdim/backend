@@ -2,25 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b17898b8-43cf-49e9-b567-ac4edc9b2078" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/v1/endpoints/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/crud/crud_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/crud/crud_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/crud/crud_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/activity_feed.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/activity_feed.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/models/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/schemas/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/schemas/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/api/test_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/api/test_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/api/test_zones.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/api/test_zones.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/bulk_locations.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/bulk_locations.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/utils/geocoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/geocoding.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,8 +187,8 @@
       <item itemvalue="Python.email_sender" />
       <item itemvalue="Python.populate_db" />
       <item itemvalue="Python.sms_sender" />
-      <item itemvalue="Shell Script.pre_start.sh" />
       <item itemvalue="Python.bulk_locations" />
+      <item itemvalue="Shell Script.pre_start.sh" />
     </list>
     <recent_temporary>
       <list>
@@ -286,6 +271,7 @@
       <workItem from="1671189874096" duration="611000" />
       <workItem from="1671264227518" duration="8942000" />
       <workItem from="1671385539237" duration="5234000" />
+      <workItem from="1671449569763" duration="20405000" />
     </task>
     <servers />
   </component>
@@ -312,7 +298,7 @@
     <SUITE FILE_PATH="coverage/gmaps_v1_0$main.coverage" NAME="main Coverage Results" MODIFIED="1665244473053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/gmaps$populate_db.coverage" NAME="populate_db Coverage Results" MODIFIED="1666013928138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/gmaps$.coverage" NAME=" Coverage Results" MODIFIED="1666013723918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests/api" />
-    <SUITE FILE_PATH="coverage/gmaps_v1_0$bulk_locations.coverage" NAME="bulk_locations Coverage Results" MODIFIED="1671390456206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
+    <SUITE FILE_PATH="coverage/gmaps_v1_0$bulk_locations.coverage" NAME="bulk_locations Coverage Results" MODIFIED="1671482922241" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
     <SUITE FILE_PATH="coverage/gmaps_v1_0$sms_sender.coverage" NAME="sms_sender Coverage Results" MODIFIED="1671272154212" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/utils" />
   </component>
 </project>

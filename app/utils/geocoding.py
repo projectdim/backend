@@ -12,7 +12,6 @@ def geocode_address(address: str, city: str) -> Any:
 
     try:
         coordinates = geocoder.geocode('{}, {}'.format(address, city), country_codes='ua')
-        print(coordinates)
         return coordinates
 
     except Exception as e:
