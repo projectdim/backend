@@ -8,36 +8,36 @@ class BasicEnum(str, Enum):
 
 
 class BuildingConditionEnum(BasicEnum):
-    intact = "Неушкоджена"
-    damaged = "Пошкоджена"
-    none = "Невідомо"
+    intact = "intact"
+    damaged = "damaged"
+    none = "no_data"
 
 
 class ElectricityEnum(BasicEnum):
-    stable = "Стабільна"
-    intermittent = "Переривчаста"
-    no_data = "Невідомо"
+    stable = "stable"
+    intermittent = "intermittent"
+    no_data = "no_data"
 
 
 class CarEntranceEnum(BasicEnum):
-    accessible = "Доступне"
-    inaccessible = "Недоступне"
-    no_data = "Невідомо"
+    accessible = "accessible"
+    inaccessible = "inaccessible"
+    no_data = "no_data"
 
 
 class WaterEnum(BasicEnum):
-    stable = "Стабільна"
-    unstable = "Нестабільна"
-    no_data = "Невідомо"
+    stable = "stable"
+    unstable = "intermittent"
+    no_data = "no_data"
 
 
 class FuelStationEnum(BasicEnum):
-    open = "Відчинено"
-    closed = "Зачинено"
-    no_data = "Невідомо"
+    open = "open"
+    closed = "closed"
+    no_data = "no_data"
 
 
 class HospitalEnum(BasicEnum):
-    open = "Відчинено"
-    closed = "Зачинено"
-    no_data = "Невідомо"
+    open = "open"
+    closed = "closed"
+    no_data = "no_data"

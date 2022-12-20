@@ -8,3 +8,5 @@ from app.models.sessionhistory import SessionHistory
 from app.models.organization import Organization
 from app.models.geospatial_index import GeospatialIndex
 from app.models.roles import Role
+from app.models.zone import Zone
+from app.models.guest_user import GuestUser

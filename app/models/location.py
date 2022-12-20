@@ -5,6 +5,7 @@ from sqlalchemy.sql import func
 import geopy.distance
 
 from app.db.base_class import Base
+from app.models.guest_user import GuestUser
 
 status_list = {
     1: "Awaiting review",
@@ -20,14 +21,17 @@ class Location(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now())
 
+    requested_by = Column(Integer, ForeignKey(GuestUser.id, ondelete="SET NULL"), nullable=True)
+
     report_expires = Column(DateTime)
     reported_by = Column(Integer, ForeignKey('user.id', ondelete="SET NULL"))
     status = Column(Integer, default=1)
 
-    address = Column(String, nullable=False, unique=True)
+    address = Column(String)
+    street_number = Column(String)
     city = Column(String)
     country = Column(String)
-    index = Column(Integer, nullable=False)
+    index = Column(Integer)
     lat = Column(Float)
     lng = Column(Float)
     reports = Column(JSONB) # Should we create a separate table for this??
@@ -36,7 +40,6 @@ class Location(Base):
         geolocation_coords = (user_lat, user_lng)
         location_coords = (self.lat, self.lng)
 
-        print(geopy.distance.geodesic(geolocation_coords, location_coords).km)
         return geopy.distance.geodesic(geolocation_coords, location_coords).km
 
     def to_json(self, user_lat=None, user_lng=None):
@@ -52,6 +55,7 @@ class Location(Base):
             "position": {
               "lat": self.lat, "lng": self.lng
             },
+            "street_number": self.street_number,
             "distance": self.calculate_distance(user_lat, user_lng) if user_lat and user_lng else None,
             "reported_by": self.reported_by,
             "report_expires": self.report_expires,

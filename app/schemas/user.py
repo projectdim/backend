@@ -21,6 +21,11 @@ class UserInvite(BaseModel):
     organization: int
 
 
+class UserPasswordRenewal(BaseModel):
+    access_token: str
+    new_password: str
+
+
 class UserPasswordUpdate(BaseModel):
     old_password: str
     new_password: str

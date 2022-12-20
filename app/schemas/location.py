@@ -11,6 +11,7 @@ from app.schemas import report
 
 class LocationBase(BaseModel):
     address: Optional[str] = None
+    street_number: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
     index: Optional[int] = None
@@ -19,12 +20,12 @@ class LocationBase(BaseModel):
 
 
 class LocationCreate(LocationBase):
-    address: str
+    # address: Optional[str] = None
     lat: float
     lng: float
-    index: int
-    city: str
-    country: str
+    # index: Optional[int] = None
+    # city: Optional[str] = None
+    # country: Optional[str] = None
 
 
 class LocationSearch(LocationBase):
@@ -35,34 +36,41 @@ class LocationSearch(LocationBase):
 class TestLocationSearch(BaseModel):
     lat: float
     lng: float
-    zoom: int
+    zoom: Optional[int]
 
 
 class LocationOut(BaseModel):
     id: int
     created_at: datetime
     updated_at: datetime
-    address: str
-    index: str
-    city: str
+    address: Optional[str] = None
+    street_number: Optional[str] = None
+    index: Optional[str] = None
+    city: Optional[str] = None
     status: int
-    country: str
+    country: Optional[str] = None
     position: Dict
     reports: Optional[Dict] = None
     distance: Optional[int] = None
+    reported_by: Optional[int] = None
+    report_expires: Optional[datetime] = None
 
     class Config:
         orm_mode = True
 
 
 class LocationAdmin(LocationOut):
-    reported_by: int
-    report_expires: datetime
+    reported_by: Optional[int] = None
+    report_expires: Optional[datetime] = None
 
 
 # TODO convert to dataclasses with default vals
 class LocationReports(BaseModel):
     location_id: int
+    street_number: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    index: Optional[int] = None
     buildingCondition: report.BuildingReport
     electricity: report.ElectricityReport
     carEntrance: report.CarEntranceReport

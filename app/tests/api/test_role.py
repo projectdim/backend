@@ -17,7 +17,7 @@ from app.core.config import settings
 #     pass
 
 
-def get_all_roles(
+def test_get_all_roles(
         client: TestClient,
         db: Session,
         superuser_token_headers: Dict[str, str]

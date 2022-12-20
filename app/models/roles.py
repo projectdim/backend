@@ -34,6 +34,9 @@ presets = {
         "organizations:view",
         "organizations:edit",
         "organizations:delete",
-        "roles:read"
+        "roles:read",
+        "zones:restrict",
+        "zones:unrestrict",
+        "zones:get"
     ]
 }

@@ -20,8 +20,11 @@ def init_db(db: Session) -> User:
                 permissions=role_presets["platform_administrator"]
             )
         )
+    if role:
+        if role.permissions != role_presets["platform_administrator"]:
+            role_crud.update_permissions(db, role_id=role.id, permissions=role_presets["platform_administrator"])
 
-    aid_worker = role_crud.get_role_by_name(db, "aid worker")
+    aid_worker = role_crud.get_role_by_name(db, "aid_worker")
     if not aid_worker:
         role_crud.create_role(
             db,
@@ -30,6 +33,9 @@ def init_db(db: Session) -> User:
                 permissions=role_presets['aid_worker']
             )
         )
+    if role:
+        if aid_worker.permissions != role_presets['aid_worker']:
+            role_crud.update_permissions(db, role_id=aid_worker.id, permissions=role_presets["aid_worker"])
 
     # creating the "DIM" organization
     organization = org_crud.get_by_name(db, "DIM")

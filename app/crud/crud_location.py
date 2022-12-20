@@ -43,30 +43,56 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         return None
 
 
-def create_location_review_request(db: Session, *, obj_in: LocationCreate) -> Optional[Location]:
+def create_location_review_request(db: Session, *, address: dict, lat: float, lng: float) -> Optional[Location]:
 
     try:
         db_obj = Location(
-            address=obj_in.address,
-            index=obj_in.index,
-            lat=obj_in.lat,
-            lng=obj_in.lng,
-            status=1,
-            country=obj_in.country,
-            city=obj_in.city,
+            address=address.get('road', None),
+            street_number=address.get('house_number', None),
+            city=address.get('city', address.get('town', address.get('village', None))),
+            country=address.get('country', None),
+            index=address.get('postcode', None),
+            lat=lat,
+            lng=lng,
+            status=1
         )
-
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
 
-        index = create_index(db, location_id=db_obj.id, lat=obj_in.lat, lng=obj_in.lng, status=db_obj.status)
+        index = create_index(db, location_id=db_obj.id, lat=lat, lng=lng, status=db_obj.status)
 
         return db_obj
 
     except Exception as e:
         print(e)
         return None
+
+
+# def create_location_review_request(db: Session, *, obj_in: LocationCreate) -> Optional[Location]:
+#
+#     try:
+#         db_obj = Location(
+#             address=obj_in.address,
+#             index=obj_in.index,
+#             lat=obj_in.lat,
+#             lng=obj_in.lng,
+#             status=1,
+#             country=obj_in.country,
+#             city=obj_in.city,
+#         )
+#
+#         db.add(db_obj)
+#         db.commit()
+#         db.refresh(db_obj)
+#
+#         index = create_index(db, location_id=db_obj.id, lat=obj_in.lat, lng=obj_in.lng, status=db_obj.status)
+#
+#         return db_obj
+#
+#     except Exception as e:
+#         print(e)
+#         return None
 
 
 def get_location_by_id(db: Session, location_id: int) -> Location:
@@ -137,6 +163,20 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     if not location:
         return None
 
+    # if not location.address:
+    if obj_in.address:
+        location.address = obj_in.address
+
+    # if not location.street_number:
+    if obj_in.street_number:
+        location.street_number = obj_in.street_number
+
+    if obj_in.city:
+        location.city = obj_in.city
+
+    if obj_in.index:
+        location.index = obj_in.index
+
     reports = {
         "buildingCondition": obj_in.buildingCondition,
         "electricity": obj_in.electricity,
@@ -158,8 +198,7 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     location.report_expires = None
     location.reported_by = user_id
 
-    #update
-
+    # update
     index_record = db.query(GeospatialIndex).filter(GeospatialIndex.location_id == obj_in.location_id).first()
     index_record.status = 3
 
@@ -178,6 +217,10 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
     # TODO rollback strategy if no changelog was created
 
     return location
+
+
+def get_activity_feed(db: Session, records: int = 10) -> List[Location]:
+    return db.query(Location).order_by(desc(Location.created_at)).limit(records)
 
 
 def delete_location(db: Session, location_id: int) -> Optional[Location]:
