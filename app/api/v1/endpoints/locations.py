@@ -1,4 +1,5 @@
 from typing import Any, List
+import os
 
 from fastapi import APIRouter, Depends, HTTPException, Security, status, Response, UploadFile, File
 
@@ -217,6 +218,9 @@ async def bulk_add_locations(
     from app.utils.bulk_locations import bulk_create
 
     filepath = f"app/datasets/{file.filename}"
+    
+    if not os.path.exists('app/datasets'):
+        os.makedirs('app/datasets')
 
     async with aiofiles.open(filepath, "wb") as file_object:
         content = await file.read()
