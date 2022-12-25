@@ -71,6 +71,7 @@ async def verify_access_token(
 ) -> Any:
 
     invited_user = crud.verify_registration_token(db, access_token)
+    print(invited_user.organization_model.name)
     if not invited_user:
         raise HTTPException(status_code=400, detail='Token is either not valid or expired.')
     return invited_user

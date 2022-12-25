@@ -38,5 +38,5 @@ class User(Base):
     password_renewal_token = Column(String)
     password_renewal_token_expires = Column(DateTime)
 
-    assigned_locations = relationship("Location")
+    organization_model = relationship('Organization', viewonly=True)
 

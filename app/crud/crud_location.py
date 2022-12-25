@@ -230,3 +230,14 @@ def delete_location(db: Session, location_id: int) -> Optional[Location]:
     db.delete(location)
     db.commit()
     return get_location_by_id(db, location_id=location_id)
+
+
+def drop_locations(db: Session):
+    try:
+        db.query(Location).delete()
+        db.commit()
+        return None
+
+    except Exception as e:
+        print(e)
+        return
