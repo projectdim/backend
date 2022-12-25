@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, Int
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
 
+from sqlalchemy.orm import relationship
+
 import geopy.distance
 
 from app.db.base_class import Base
@@ -36,6 +38,8 @@ class Location(Base):
     lng = Column(Float)
     reports = Column(JSONB) # Should we create a separate table for this??
 
+    reported_by_model = relationship('User', foreign_keys='Location.reported_by')
+
     def calculate_distance(self, user_lat, user_lng):
         geolocation_coords = (user_lat, user_lng)
         location_coords = (self.lat, self.lng)
@@ -58,6 +62,7 @@ class Location(Base):
             "street_number": self.street_number,
             "distance": self.calculate_distance(user_lat, user_lng) if user_lat and user_lng else None,
             "reported_by": self.reported_by,
+            "organization_name": self.reported_by_model.organization_model.name,
             "report_expires": self.report_expires,
             "reports": self.reports
         }

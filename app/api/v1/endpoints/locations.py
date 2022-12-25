@@ -1,4 +1,5 @@
 from typing import Any, List
+import os
 
 from fastapi import APIRouter, Depends, HTTPException, Security, status, Response, UploadFile, File
 
@@ -13,6 +14,7 @@ from app.crud import crud_changelogs as logs_crud
 from app.crud import crud_geospatial as geo_crud
 from app.crud import crud_zones as zone_crud
 from app.utils import geocoding
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -206,6 +208,17 @@ async def remove_location(location_id: int,
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+@router.get('/recent-reports')
+async def get_activity_feed(
+        records: int = 10,
+        db: Session = Depends(get_db)
+) -> Any:
+
+    locations = crud.get_activity_feed(db, records)
+
+    return [location.to_json() for location in locations]
+
+
 @router.post('/bulk-add')
 async def bulk_add_locations(
     sheet_type: int,
@@ -217,6 +230,9 @@ async def bulk_add_locations(
     from app.utils.bulk_locations import bulk_create
 
     filepath = f"app/datasets/{file.filename}"
+    
+    if not os.path.exists('app/datasets'):
+        os.makedirs('app/datasets')
 
     async with aiofiles.open(filepath, "wb") as file_object:
         content = await file.read()
@@ -228,3 +244,18 @@ async def bulk_add_locations(
         raise HTTPException(status_code=400, detail=op_status)
 
     return Response(status_code=status.HTTP_201_CREATED)
+
+
+# TODO REMOVE ENDPOINT ( TESTING ONLY )
+@router.delete('/bulk-delete')
+async def delete_all_locations(
+        db: Session = Depends(get_db),
+        current_user: models.User = Security(get_current_active_user,
+                                             scopes=['locations:delete'])
+) -> Any:
+
+    if settings.ENV_TYPE != "test":
+        raise HTTPException(status_code=403, detail="This endpoint is restricted.")
+
+    crud.drop_locations(db)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

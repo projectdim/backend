@@ -95,7 +95,6 @@ def serialize_spreadsheet(spreadsheet, sheet_type: int) -> List[Dict]:
             if location["address"] is None:
                 continue
             locations.append(location)
-            print(locations[0])
     return locations
 
 
@@ -103,7 +102,8 @@ def geocode_locations(locations: List[Dict]):
 
     geocoded_locations = []
     for location in locations:
-        coordinates = geocode_address(location["address"], location["city"])
+        addr_str = '{}'.format(location["address"] + " " + str(location.get('street_number')) if location.get('street_number',None) else location["address"])
+        coordinates = geocode_address(addr_str, location["city"])
         if not coordinates:
             continue
         location["lat"] = coordinates.latitude
@@ -129,7 +129,7 @@ def add_to_db(location):
             city=location.get('city'),
             status=3,
             reports=location.get('reports'),
-            street_number=str(location.get('street_number', None))
+            street_number=location.get('street_number', None)
         )
 
         db.add(db_obj)

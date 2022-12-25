@@ -44,6 +44,7 @@ class LocationOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     address: Optional[str] = None
+    organization_name: Optional[str] = None
     street_number: Optional[str] = None
     index: Optional[str] = None
     city: Optional[str] = None

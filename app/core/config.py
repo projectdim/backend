@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     SERVER_NAME: str = os.getenv("SERVER_NAME", "Google Maps Project")
     SERVER_HOST: AnyHttpUrl = os.getenv("SERVER_HOST", "http://127.0.0.1:7000")
     DOMAIN_ADDRESS: AnyHttpUrl = os.getenv("DOMAIN_ADDRESS", "https://projectdim.org")
+    ENV_TYPE: str = os.getenv("ENV_TYPE", "test")
 
     CORS_ORIGINS: List[AnyHttpUrl] = []
 
@@ -44,6 +45,7 @@ class Settings(BaseSettings):
 
     TEST_USER_EMAIL: str = os.getenv("TEST_USER_EMAIL", "test@test.com")
     TEST_USER_PASSWORD: str = os.getenv("TEST_USER_PASSWORD", "asd112233")
+    TEST_USER_PHONE_NUM: str = os.getenv("TEST_USER_PHONENUM", "+380638773140")
 
     EMAILS_ENABLED: bool = os.getenv('EMAILS_ENABLED', True)
     AMAZON_APP_ID: str = os.getenv('AMAZON_APP_ID', "none")

@@ -8,5 +8,7 @@ COPY ./alembic /src/alembic
 COPY ./.env /src/.env
 RUN pip install --no-cache-dir --upgrade -r /src/requirements.txt
 COPY ./app /src/app
-CMD ["uvicorn", "app.main:app", "--reload","--host", "0.0.0.0", "--port", "7000"]
+RUN alembic upgrade heads
+RUN python populate_db.py
+CMD ["uvicorn", "app.main:app","--host", "0.0.0.0", "--port", "7000"]
 EXPOSE 7000

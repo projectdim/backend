@@ -25,7 +25,10 @@ async def request_otp_code(
 
     otp_status = sms.send_otp(phone_number, 6, 15, settings.PROJECT_NAME, "Location request", "en-US")
     if not otp_status or otp_status["StatusCode"] != 200:
-        raise HTTPException(status_code=400, detail="Cannot send an otp code, please try again later.")
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot send an otp code, please try again later."
+        )
 
     return JSONResponse(status_code=status.HTTP_200_OK, content="Code sent. Please check your phone.")
 
@@ -44,7 +47,10 @@ async def request_location_info_with_otp(
     )
 
     if not otp_verification or not otp_verification["Valid"]:
-        raise HTTPException(status_code=400, detail="Provided otp is not valid or expired")
+        raise HTTPException(
+            status_code=400,
+            detail="Provided otp is not valid or expired"
+        )
 
     pass
 

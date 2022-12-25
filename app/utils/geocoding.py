@@ -1,17 +1,25 @@
 from typing import Any
+import os
+
+import dotenv
 
 from geopy.geocoders import GoogleV3, Nominatim
 import osmnx as ox
 from shapely.geometry import Point
 
 
+dotenv.load_dotenv()
+
+
 geocoder = Nominatim(user_agent="GetLoc")
+gmaps_geocoder = GoogleV3(api_key=os.environ.get('GMAPS_APIKEY'))
 
 
 def geocode_address(address: str, city: str) -> Any:
 
     try:
-        coordinates = geocoder.geocode('{}, {}'.format(address, city), country_codes='ua')
+        # coordinates = geocoder.geocode('{}, {}'.format(address, city), country_codes='ua')
+        coordinates = gmaps_geocoder.geocode('{}, {}'.format(address, city), region='ua')
         return coordinates
 
     except Exception as e:
