@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.main import app
 from app.db.session import SessionLocal
 from app.tests.utils.user import user_authentication_headers, get_superuser_token_headers, get_superuser_id
-from app.tests.utils.location import get_location
+from app.tests.utils.location import get_location, create_sample_location_request
 from app.tests.utils.organization import get_master_organization
 from app.core.config import settings
 
@@ -37,8 +37,21 @@ def aid_worker_token_headers(client: TestClient) -> Dict[str, str]:
 
 
 @pytest.fixture(scope="module")
-def location_id(db: Session) -> int:
-    return get_location(db).id
+def sample_location(client: TestClient) -> Dict[str, str]:
+    return create_sample_location_request(client=client)
+
+
+@pytest.fixture(scope="module")
+def sample_location_coordinates() -> Dict:
+    return {
+        "lat": 49.24003079548452,
+        "lng": 28.480316724096923
+    }
+
+
+# @pytest.fixture(scope="module")
+# def location_id(db: Session) -> int:
+#     return get_location(db).id
 
 
 @pytest.fixture(scope="module")

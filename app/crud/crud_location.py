@@ -220,7 +220,7 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
 
 
 def get_activity_feed(db: Session, records: int = 10) -> List[Location]:
-    return db.query(Location).order_by(desc(Location.created_at)).limit(records)
+    return db.query(Location).filter(Location.status == 3).order_by(desc(Location.created_at)).limit(records)
 
 
 def delete_location(db: Session, location_id: int) -> Optional[Location]:

@@ -62,7 +62,7 @@ class Location(Base):
             "street_number": self.street_number,
             "distance": self.calculate_distance(user_lat, user_lng) if user_lat and user_lng else None,
             "reported_by": self.reported_by,
-            "organization_name": self.reported_by_model.organization_model.name,
+            "organization_name": self.reported_by_model.organization_model.name if self.reported_by else None,
             "report_expires": self.report_expires,
             "reports": self.reports
         }
