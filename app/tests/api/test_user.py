@@ -9,8 +9,8 @@ from app.crud import crud_organizations as org_crud
 from app.tests.utils.utils import random_lower_string
 
 
-def test_invite_new_user(client: TestClient, db: Session, superuser_token_headers: Dict[str, str]) -> None:
-    dim_org = org_crud.get_by_name(db, "DIM")
+def test_invite_new_user(client: TestClient, test_db: Session, superuser_token_headers: Dict[str, str]) -> None:
+    dim_org = org_crud.get_by_name(test_db, "DIM")
     assert dim_org
 
     payload = {
@@ -22,7 +22,7 @@ def test_invite_new_user(client: TestClient, db: Session, superuser_token_header
 
     assert 200 <= r.status_code < 300
     invited_user = r.json()
-    user = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    user = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL)
     assert user
     assert user.email == invited_user["email"]
     assert user.email_confirmed == False
@@ -30,8 +30,8 @@ def test_invite_new_user(client: TestClient, db: Session, superuser_token_header
     assert user.role == "aid_worker"
 
 
-def test_confirm_user_invite(client: TestClient, db: Session) -> None:
-    test_user_registration_token = crud.get_by_email(db, email=settings.TEST_USER_EMAIL).registration_token
+def test_confirm_user_invite(client: TestClient, test_db: Session) -> None:
+    test_user_registration_token = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL).registration_token
     assert test_user_registration_token
 
     payload = {
@@ -46,7 +46,7 @@ def test_confirm_user_invite(client: TestClient, db: Session) -> None:
 
     assert 200 <= r.status_code < 300
     registered_user = r.json()
-    user = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    user = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL)
     assert user
     assert user.username == registered_user['username']
     assert user.email_confirmed == True
@@ -63,8 +63,8 @@ def test_get_me(client: TestClient, aid_worker_token_headers: Dict[str, str]) ->
     assert current_user["email"] == settings.TEST_USER_EMAIL
 
 
-def test_patch_user(client: TestClient, db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
-    existing_user = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+def test_patch_user(client: TestClient, test_db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
+    existing_user = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL)
 
     payload = {
         "username": random_lower_string(),
@@ -78,7 +78,7 @@ def test_patch_user(client: TestClient, db: Session, aid_worker_token_headers: D
     assert updated_user["username"] != existing_user.username
 
 
-def test_patch_user_password(client: TestClient, db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
+def test_patch_user_password(client: TestClient, test_db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
     new_password = random_lower_string()
 
     payload = {
@@ -120,11 +120,11 @@ def test_patch_user_password(client: TestClient, db: Session, aid_worker_token_h
 
 def test_user_change_role(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
-    aid_worker_user = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    aid_worker_user = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL)
     assert aid_worker_user
 
     r = client.put(
@@ -140,7 +140,7 @@ def test_user_change_role(
 
 def test_user_password_reset(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         aid_worker_token_headers: Dict[str, str]
 ) -> None:
 
@@ -148,7 +148,7 @@ def test_user_password_reset(
 
     assert 200 <= r.status_code < 300
 
-    aid_worker = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    aid_worker = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL)
     assert aid_worker.password_renewal_token
     assert aid_worker.password_renewal_token_expires
 
@@ -176,10 +176,10 @@ def test_user_password_reset(
     # assert not db_user.password_renewal_token_expires
 
 
-def test_user_delete_me(client: TestClient, db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
+def test_user_delete_me(client: TestClient, test_db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
 
     r = client.delete(f"{settings.API_V1_STR}/users/delete-me", headers=aid_worker_token_headers)
     assert 200 <= r.status_code < 300
 
-    user = crud.get_by_email(db, email=settings.TEST_USER_EMAIL)
+    user = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL)
     assert user is None

@@ -1,4 +1,5 @@
 from typing import Any
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from fastapi.responses import JSONResponse
@@ -20,7 +21,6 @@ async def request_otp_code(
         phone_number: str,
         db: Session = Depends(get_db)
 ) -> Any:
-
     client = crud.get_or_create(db, phone_number)
 
     otp_status = sms.send_otp(phone_number, 6, 15, settings.PROJECT_NAME, "Location request", "en-US")
@@ -30,7 +30,13 @@ async def request_otp_code(
             detail="Cannot send an otp code, please try again later."
         )
 
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Code sent. Please check your phone.")
+    return {
+        "status": "success",
+        "expiration_minutes": 15,
+        "expires_at": (datetime.utcnow() + timedelta(minutes=15)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    }
+
+    # return JSONResponse(status_code=status.HTTP_200_OK, content="Code sent. Please check your phone.")
 
 
 @router.post('/request-location')

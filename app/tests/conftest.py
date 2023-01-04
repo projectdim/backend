@@ -4,19 +4,65 @@ import pytest
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from sqlalchemy_utils import drop_database, database_exists, create_database
 
 from app.main import app
+from app.db.init_db import init_db
+from app.api.dependencies import get_db
+from app.db.base import Base
 from app.db.session import SessionLocal
 from app.tests.utils.user import user_authentication_headers, get_superuser_token_headers, get_superuser_id
-from app.tests.utils.location import get_location, create_sample_location_request
+from app.tests.utils.location import create_sample_location_request
 from app.tests.utils.organization import get_master_organization
 from app.core.config import settings
+
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:admin@localhost/test_db"
+
+if database_exists(SQLALCHEMY_DATABASE_URL):
+    drop_database(SQLALCHEMY_DATABASE_URL)
+
+create_database(SQLALCHEMY_DATABASE_URL)
+
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    pool_pre_ping=True,
+    pool_size=20
+)
+
+TestingSessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base.metadata.create_all(bind=engine)
+init_db(TestingSessionLocal())
+
+
+def override_get_db():
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
+
+
+app.dependency_overrides[get_db] = override_get_db
 
 
 @pytest.fixture(scope="module")
 def client() -> Generator:
     with TestClient(app) as c:
         yield c
+
+
+@pytest.fixture(scope="session")
+def test_db() -> Generator:
+    yield TestingSessionLocal()
 
 
 @pytest.fixture(scope="session")
@@ -49,17 +95,12 @@ def sample_location_coordinates() -> Dict:
     }
 
 
-# @pytest.fixture(scope="module")
-# def location_id(db: Session) -> int:
-#     return get_location(db).id
+@pytest.fixture(scope="module")
+def superuser_id(test_db: Session) -> int:
+    return get_superuser_id(test_db)
 
 
 @pytest.fixture(scope="module")
-def superuser_id(db: Session) -> int:
-    return get_superuser_id(db)
-
-
-@pytest.fixture(scope="module")
-def master_organization_id(db: Session) -> int:
-    return get_master_organization(db)
+def master_organization_id(test_db: Session) -> int:
+    return get_master_organization(test_db)
 

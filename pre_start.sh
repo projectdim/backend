@@ -3,9 +3,6 @@
 #activate venv
 source venv/bin/activate
 
-#install the requirements
-pip install -r requirements.txt
-
 #run migrations
 alembic upgrade heads
 

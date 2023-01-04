@@ -9,7 +9,11 @@ from app.crud import crud_user as user_crud
 from app.core.config import settings
 
 
-def test_create_organization(client: TestClient, db: Session, superuser_token_headers: Dict[str, str]) -> None:
+def test_create_organization(
+        client: TestClient,
+        test_db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
 
     payload = {
         "name": "TestOrg"
@@ -20,11 +24,15 @@ def test_create_organization(client: TestClient, db: Session, superuser_token_he
 
     created_organization = r.json()
     assert created_organization
-    organization = crud.get_by_id(db, organization_id=created_organization['id'])
+    organization = crud.get_by_id(test_db, organization_id=created_organization['id'])
     assert organization.name == created_organization["name"]
 
 
-def test_get_all_organizations(client: TestClient, db: Session, superuser_token_headers: Dict[str, str]) -> None:
+def test_get_all_organizations(
+        client: TestClient,
+        test_db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
 
     r = client.get(f'{settings.API_V1_STR}/organizations/all', headers=superuser_token_headers)
     assert 200 <= r.status_code < 300
@@ -32,7 +40,7 @@ def test_get_all_organizations(client: TestClient, db: Session, superuser_token_
 
 def test_get_organization_by_id(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
         master_organization_id: int
 ) -> None:
@@ -47,7 +55,7 @@ def test_get_organization_by_id(
 
 def test_edit_organization(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
         master_organization_id: int
 ) -> None:
@@ -71,7 +79,7 @@ def test_edit_organization(
 
 def test_search_organization(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
@@ -85,7 +93,7 @@ def test_search_organization(
 
 def test_remove_organization_member(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
         superuser_id: int,
         master_organization_id: int
@@ -97,7 +105,7 @@ def test_remove_organization_member(
     )
     assert 200 <= r.status_code < 300
 
-    master_user = user_crud.get(db, user_id=superuser_id)
+    master_user = user_crud.get(test_db, user_id=superuser_id)
     assert master_user.organization is None
 
     # organization = r.json()
@@ -106,7 +114,7 @@ def test_remove_organization_member(
 
 def test_invite_organization_members(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
         master_organization_id: int,
         superuser_id: int
@@ -126,17 +134,17 @@ def test_invite_organization_members(
     organization = r.json()
     assert organization["participants"]
 
-    master_user = user_crud.get(db, user_id=superuser_id)
+    master_user = user_crud.get(test_db, user_id=superuser_id)
     assert master_user.organization == master_organization_id
 
 
 def test_delete_organization(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
-    organization_to_delete = crud.get_by_name(db, "TestOrg")
+    organization_to_delete = crud.get_by_name(test_db, "TestOrg")
 
     r = client.delete(
         f'{settings.API_V1_STR}/organizations/{organization_to_delete.id}',
