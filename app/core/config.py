@@ -48,6 +48,7 @@ class Settings(BaseSettings):
     TEST_USER_PHONE_NUM: str = os.getenv("TEST_USER_PHONENUM", "+380638773140")
 
     EMAILS_ENABLED: bool = os.getenv('EMAILS_ENABLED', True)
+    OTP_EXPIRE_MINUTES: int = os.getenv("OTP_EXPIRE_MINUTES", 15)
     AMAZON_APP_ID: str = os.getenv('AMAZON_APP_ID', "none")
     AWS_PROFILE: str = os.getenv("AWS_PROFILE", "dim")
 

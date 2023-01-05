@@ -32,7 +32,23 @@ async def request_otp_code(
 
     guest_user = crud.get_or_create(db, phone_number)
 
-    otp_status = sms.send_otp(phone_number, 6, 15, settings.PROJECT_NAME, "Location request", "en-US")
+    if guest_user.last_request:
+        diff_minutes = (datetime.now() - guest_user.last_request).total_seconds() / 60.0
+        # TODO provide a constraint to tie the new code timer to.
+        if diff_minutes < 3.0:
+            raise HTTPException(
+                status_code=400,
+                detail="Code has been already sent, please wait."
+            )
+
+    otp_status = sms.send_otp(
+        phone_number=phone_number,
+        code_length=6,
+        validity_period=settings.OTP_EXPIRE_MINUTES,
+        brand_name=settings.PROJECT_NAME,
+        source="Location request",
+        language="en-US"
+    )
     if not otp_status or otp_status["StatusCode"] != 200:
         raise HTTPException(
             status_code=400,
@@ -46,8 +62,8 @@ async def request_otp_code(
 
     return {
         "status": "success",
-        "expiration_minutes": 15,
-        "expires_at": (datetime.utcnow() + timedelta(minutes=15)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        "expiration_minutes": settings.OTP_EXPIRE_MINUTES,
+        "expires_at": (datetime.utcnow() + timedelta(minutes=settings.OTP_EXPIRE_MINUTES)).strftime('%Y-%m-%dT%H:%M:%SZ')
     }
 
     # return JSONResponse(status_code=status.HTTP_200_OK, content="Code sent. Please check your phone.")
