@@ -43,7 +43,14 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         return None
 
 
-def create_location_review_request(db: Session, *, address: dict, lat: float, lng: float) -> Optional[Location]:
+def create_location_review_request(
+        db: Session,
+        *,
+        address: dict,
+        lat: float,
+        lng: float,
+        requested_by: int = None
+) -> Optional[Location]:
 
     try:
         db_obj = Location(
@@ -54,7 +61,8 @@ def create_location_review_request(db: Session, *, address: dict, lat: float, ln
             index=address.get('postcode', None),
             lat=lat,
             lng=lng,
-            status=1
+            status=1,
+            requested_by=requested_by
         )
         db.add(db_obj)
         db.commit()
@@ -220,7 +228,7 @@ def submit_location_reports(db: Session, *, obj_in: LocationReports, user_id: in
 
 
 def get_activity_feed(db: Session, records: int = 10) -> List[Location]:
-    return db.query(Location).order_by(desc(Location.created_at)).limit(records)
+    return db.query(Location).filter(Location.status == 3).order_by(desc(Location.created_at)).limit(records)
 
 
 def delete_location(db: Session, location_id: int) -> Optional[Location]:

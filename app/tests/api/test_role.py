@@ -19,7 +19,7 @@ from app.core.config import settings
 
 def test_get_all_roles(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 

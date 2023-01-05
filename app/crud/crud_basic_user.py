@@ -26,3 +26,20 @@ def get_or_create(db: Session, phone_number: str) -> GuestUser:
     if not user:
         user = create(db, phone_number=phone_number)
     return user
+
+
+def new_otp_request(
+        db: Session,
+        user_id: int
+) -> GuestUser:
+
+    guest_user = db.query(GuestUser).get(user_id)
+
+    guest_user.last_request = datetime.now()
+    guest_user.total_otp_requests = guest_user.total_otp_requests + 1
+
+    db.commit()
+    db.refresh(guest_user)
+
+    return guest_user
+

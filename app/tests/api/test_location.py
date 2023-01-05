@@ -4,69 +4,52 @@ from fastapi.testclient import TestClient
 
 from sqlalchemy.orm import Session
 
+from app.models.location import Location
 from app.crud import crud_geospatial as geo_crud
 from app.crud import crud_location as location_crud
 from app.core.config import settings
 from app.utils.populate_db import populate_reports
 
 
-# def test_request_location_info(client: TestClient, db: Session) -> None:
-#
-#     # A sample location in Vinnitsya
-#     payload = {
-#         "address": "вул. Стеценко, 64",
-#         "lat": 49.24003079548452,
-#         "lng": 28.480316724096923,
-#         "index": 21000,
-#         "city": "Вінниця",
-#         "country": "Україна"
-#     }
-#
-#     r = client.post(f"{settings.API_V1_STR}/locations/request-info", json=payload)
-#     assert 200 <= r.status_code < 300
-#
-#     requested_location = r.json()
-#     location = location_crud.get_location_by_id(db, location_id=requested_location['id'])
-#     assert location.status == 1
-#     assert location.address == requested_location["address"]
-#     geospatial_record = geo_crud.search_index_by_location_id(db, location_id=location.id)
-#     assert geospatial_record
-#     assert geospatial_record.geohash
-
-
 def test_request_location_info(
         client: TestClient,
-        db: Session
+        test_db: Session,
+        sample_location_coordinates: Dict[str, str]
 ) -> None:
 
-    payload = {
-        "lat": 49.24003079548452,
-        "lng": 28.480316724096923
-    }
-
-    r = client.post(f"{settings.API_V1_STR}/locations/request-info", json=payload)
+    r = client.post(f"{settings.API_V1_STR}/locations/request-info", json=sample_location_coordinates)
     assert 200 <= r.status_code < 300
 
     requested_location = r.json()
-    location = location_crud.get_location_by_id(db, location_id=requested_location['id'])
+    location = location_crud.get_location_by_id(test_db, location_id=requested_location['id'])
     assert location.status == 1
     assert requested_location['address'] == location.address
-    geospatial_record = geo_crud.search_index_by_location_id(db, location_id=location.id)
+    geospatial_record = geo_crud.search_index_by_location_id(test_db, location_id=location.id)
     assert geospatial_record
     assert geospatial_record.geohash
+    #
+    # location_crud.delete_location(test_db, location_id=location.id)
 
 
-def test_get_location_by_coords(client: TestClient, db: Session) -> None:
+def test_get_location_by_coords(
+        client: TestClient,
+        test_db: Session
+) -> None:
 
-    # Querying the previously created location
     r = client.get(f"{settings.API_V1_STR}/locations/search?lat=49.24003079548452&lng=28.480316724096923")
     assert 200 <= r.status_code < 300
 
     requested_location = r.json()
     assert requested_location
+    #
+    # location_crud.delete_location(test_db, location_id=sample_location["id"])
 
 
-def test_pending_location_count(client: TestClient, db: Session, superuser_token_headers: Dict[str, str]) -> None:
+def test_pending_location_count(
+        client: TestClient,
+        test_db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
 
     r = client.get(f"{settings.API_V1_STR}/locations/pending-count", headers=superuser_token_headers)
     assert 200 <= r.status_code < 300
@@ -75,8 +58,14 @@ def test_pending_location_count(client: TestClient, db: Session, superuser_token
     assert "count" in location_count
     assert location_count["count"] > 0
 
+    # location_crud.delete_location(test_db, location_id=sample_location["id"])
 
-def test_get_pending_locations(client: TestClient, db: Session, superuser_token_headers: Dict[str, str]) -> None:
+
+def test_get_pending_locations(
+        client: TestClient,
+        test_db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
 
     # TODO testing with the user geolocation?
     r = client.get(f"{settings.API_V1_STR}/locations/location-requests", headers=superuser_token_headers)
@@ -89,25 +78,32 @@ def test_get_pending_locations(client: TestClient, db: Session, superuser_token_
 
 def test_assign_location(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
-        location_id: int,
-        superuser_id: int
+        superuser_id: int,
+        location: Location
 ) -> None:
 
-    r = client.put(f"{settings.API_V1_STR}/locations/assign-location?location_id={location_id}", headers=superuser_token_headers)
+    r = client.put(
+        f"{settings.API_V1_STR}/locations/assign-location?location_id={location.id}",
+        headers=superuser_token_headers
+    )
+
     assert 200 <= r.status_code < 300
     assigned_location = r.json()
 
     assert assigned_location["reported_by"] == superuser_id
     assert assigned_location["status"] == 1
 
+    # location_crud.delete_location(test_db, location_id=location.id)
+
 
 def test_get_assigned_locations(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
-        superuser_id: int
+        superuser_id: int,
+        location: Location
 ) -> None:
 
     r = client.get(f"{settings.API_V1_STR}/locations/assigned-locations", headers=superuser_token_headers)
@@ -119,15 +115,25 @@ def test_get_assigned_locations(
         assert location["reported_by"] == superuser_id
         assert location["status"] == 1
 
+    # location_crud.delete_location(test_db, location_id=sample_location["id"])
+
 
 def test_remove_assigned_location(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
-        location_id: int
+        location: Location
 ) -> None:
 
-    r = client.put(f"{settings.API_V1_STR}/locations/remove-assignment?location_id={location_id}", headers=superuser_token_headers)
+    r = client.put(
+        f"{settings.API_V1_STR}/locations/assign-location?location_id={location.id}",
+        headers=superuser_token_headers
+    )
+
+    r = client.put(
+        f"{settings.API_V1_STR}/locations/remove-assignment?location_id={location.id}",
+        headers=superuser_token_headers
+    )
     assert 200 <= r.status_code < 300
 
     pending_location = r.json()
@@ -137,9 +143,9 @@ def test_remove_assigned_location(
 
 def test_submit_location_report(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str],
-        location_id: int,
+        location: Location,
         superuser_id: int
 ) -> None:
 
@@ -149,9 +155,14 @@ def test_submit_location_report(
     assert pending_locations
 
     random_reports = populate_reports()
-    random_reports["location_id"] = location_id
+    random_reports["location_id"] = location.id
 
-    r = client.put(f"{settings.API_V1_STR}/locations/submit-report", json=random_reports, headers=superuser_token_headers)
+    r = client.put(
+        f"{settings.API_V1_STR}/locations/submit-report",
+        json=random_reports,
+        headers=superuser_token_headers
+    )
+
     assert 200 <= r.status_code < 300
 
     reported_location = r.json()
@@ -161,10 +172,16 @@ def test_submit_location_report(
     assert reported_location["reported_by"] == superuser_id
     assert reported_location["report_expires"] is None
 
+    # location_crud.delete_location(test_db, location_id=sample_location['id'])
 
-def test_get_location_info(client: TestClient, db: Session, location_id: int) -> None:
 
-    r = client.get(f'{settings.API_V1_STR}/locations/location-info?location_id={location_id}')
+def test_get_location_info(
+        client: TestClient,
+        test_db: Session,
+        location: Location
+) -> None:
+
+    r = client.get(f'{settings.API_V1_STR}/locations/location-info?location_id={location.id}')
     assert 200 <= r.status_code < 300
     requested_location = r.json()
 
@@ -173,9 +190,13 @@ def test_get_location_info(client: TestClient, db: Session, location_id: int) ->
     assert requested_location["status"] == 3
 
 
-def test_get_location_changelogs(client: TestClient, db: Session, location_id: int) -> None:
+def test_get_location_changelogs(
+        client: TestClient,
+        test_db: Session,
+        location: Location
+) -> None:
 
-    r = client.get(f'{settings.API_V1_STR}/locations/changelogs?location_id={location_id}')
+    r = client.get(f'{settings.API_V1_STR}/locations/changelogs?location_id={location.id}')
     assert 200 <= r.status_code < 300
     location_changelogs = r.json()
 
@@ -200,7 +221,7 @@ def test_get_location_changelogs(client: TestClient, db: Session, location_id: i
 
 def test_request_location_without_valid_address(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
@@ -235,7 +256,7 @@ def test_request_location_without_valid_address(
     assert updated_location["status"] == 3
 
     # delete the location
-    location_crud.delete_location(db, updated_location['id'])
+    # location_crud.delete_location(test_db, updated_location['id'])
 
 
 

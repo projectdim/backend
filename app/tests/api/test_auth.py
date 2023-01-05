@@ -3,7 +3,9 @@ from fastapi.testclient import TestClient
 from app.core.config import settings
 
 
-def test_get_access_token(client: TestClient) -> None:
+def test_get_access_token(
+        client: TestClient
+) -> None:
 
     payload = {
         "username": settings.FIRST_SUPERUSER,

@@ -83,7 +83,10 @@ async def request_location_review(
 
     existing_location = crud.get_location_by_coordinates(db, location.lat, location.lng)
     if existing_location:
-        raise HTTPException(status_code=400, detail="Review request for this location was already sent")
+        raise HTTPException(
+            status_code=400,
+            detail="Review request for this location was already sent"
+        )
 
     address = geocoding.reverse(location.lat, location.lng)
     if not address:
