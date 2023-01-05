@@ -11,7 +11,7 @@ from app.crud import crud_zones as crud
 
 def test_restrict_zone(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
@@ -30,7 +30,7 @@ def test_restrict_zone(
 
 def test_request_location_in_restricted_zone(
         client: TestClient,
-        db: Session
+        test_db: Session
 ) -> None:
 
     # sample location coordinates in Crimea
@@ -45,7 +45,7 @@ def test_request_location_in_restricted_zone(
 
 def test_get_all_restricted_zones(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
@@ -59,11 +59,11 @@ def test_get_all_restricted_zones(
 
 def test_allow_zone(
         client: TestClient,
-        db: Session,
+        test_db: Session,
         superuser_token_headers: Dict[str, str]
 ) -> None:
 
-    existing_zone = crud.get_zone_by_verbose_name(db, 'Crimea')
+    existing_zone = crud.get_zone_by_verbose_name(test_db, 'Crimea')
     r = client.delete(
         f'{settings.API_V1_STR}/zones/allow?zone_id={existing_zone.id}',
         headers=superuser_token_headers

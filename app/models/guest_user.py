@@ -11,4 +11,7 @@ class GuestUser(Base):
 
     phone_number = Column(String, nullable=False, unique=True)
 
+    last_request = Column(DateTime, nullable=True)
+    total_otp_requests = Column(Integer, default=0)
+
     location_requests = relationship("Location")

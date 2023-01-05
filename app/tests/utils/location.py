@@ -9,6 +9,14 @@ from app.crud import crud_location as crud
 from app.core.config import settings
 
 
+def get_location_by_coords(db, loc_coords: Dict) -> Location:
+    return crud.get_location_by_coordinates(
+        db,
+        loc_coords.get('lat'),
+        loc_coords.get('lng')
+    )
+
+
 def get_location(db: Session) -> Location:
 
     locations = crud.get_all_locations(db)

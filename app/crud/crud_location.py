@@ -43,7 +43,14 @@ def create_location(db: Session, *, obj_in: LocationCreate) -> Location:
         return None
 
 
-def create_location_review_request(db: Session, *, address: dict, lat: float, lng: float) -> Optional[Location]:
+def create_location_review_request(
+        db: Session,
+        *,
+        address: dict,
+        lat: float,
+        lng: float,
+        requested_by: int = None
+) -> Optional[Location]:
 
     try:
         db_obj = Location(
@@ -54,7 +61,8 @@ def create_location_review_request(db: Session, *, address: dict, lat: float, ln
             index=address.get('postcode', None),
             lat=lat,
             lng=lng,
-            status=1
+            status=1,
+            requested_by=requested_by
         )
         db.add(db_obj)
         db.commit()

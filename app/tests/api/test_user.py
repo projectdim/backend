@@ -9,7 +9,11 @@ from app.crud import crud_organizations as org_crud
 from app.tests.utils.utils import random_lower_string
 
 
-def test_invite_new_user(client: TestClient, test_db: Session, superuser_token_headers: Dict[str, str]) -> None:
+def test_invite_new_user(
+        client: TestClient,
+        test_db: Session,
+        superuser_token_headers: Dict[str, str]
+) -> None:
     dim_org = org_crud.get_by_name(test_db, "DIM")
     assert dim_org
 
@@ -30,7 +34,10 @@ def test_invite_new_user(client: TestClient, test_db: Session, superuser_token_h
     assert user.role == "aid_worker"
 
 
-def test_confirm_user_invite(client: TestClient, test_db: Session) -> None:
+def test_confirm_user_invite(
+        client: TestClient,
+        test_db: Session
+) -> None:
     test_user_registration_token = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL).registration_token
     assert test_user_registration_token
 
@@ -53,7 +60,10 @@ def test_confirm_user_invite(client: TestClient, test_db: Session) -> None:
     assert user.is_active == True
 
 
-def test_get_me(client: TestClient, aid_worker_token_headers: Dict[str, str]) -> None:
+def test_get_me(
+        client: TestClient,
+        aid_worker_token_headers: Dict[str, str]
+) -> None:
     r = client.get(f"{settings.API_V1_STR}/users/me", headers=aid_worker_token_headers)
 
     assert 200 <= r.status_code < 300
@@ -63,7 +73,11 @@ def test_get_me(client: TestClient, aid_worker_token_headers: Dict[str, str]) ->
     assert current_user["email"] == settings.TEST_USER_EMAIL
 
 
-def test_patch_user(client: TestClient, test_db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
+def test_patch_user(
+        client: TestClient,
+        test_db: Session,
+        aid_worker_token_headers: Dict[str, str]
+) -> None:
     existing_user = crud.get_by_email(test_db, email=settings.TEST_USER_EMAIL)
 
     payload = {
@@ -78,7 +92,11 @@ def test_patch_user(client: TestClient, test_db: Session, aid_worker_token_heade
     assert updated_user["username"] != existing_user.username
 
 
-def test_patch_user_password(client: TestClient, test_db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
+def test_patch_user_password(
+        client: TestClient,
+        test_db: Session,
+        aid_worker_token_headers: Dict[str, str]
+) -> None:
     new_password = random_lower_string()
 
     payload = {
@@ -176,7 +194,11 @@ def test_user_password_reset(
     # assert not db_user.password_renewal_token_expires
 
 
-def test_user_delete_me(client: TestClient, test_db: Session, aid_worker_token_headers: Dict[str, str]) -> None:
+def test_user_delete_me(
+        client: TestClient,
+        test_db: Session,
+        aid_worker_token_headers: Dict[str, str]
+) -> None:
 
     r = client.delete(f"{settings.API_V1_STR}/users/delete-me", headers=aid_worker_token_headers)
     assert 200 <= r.status_code < 300
