@@ -139,7 +139,7 @@ async def reset_user_password(
         send_email(
             [user.email],
             'password-renewal',
-            link='{}/password/renewal/?access_token={}'.format(settings.DOMAIN_ADDRESS, user.password_renewal_token)
+            link='{}/password-reset/?access_token={}'.format(settings.DOMAIN_ADDRESS, user.password_renewal_token)
         )
 
     # TODO CHECK FOR EMAIL STATUS

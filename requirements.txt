@@ -15,6 +15,7 @@ colorama==0.4.5
 contourpy==1.0.6
 cryptography==38.0.1
 cycler==0.11.0
+Deprecated==1.2.13
 dnspython==2.2.1
 ecdsa==0.18.0
 email-validator==1.2.1
@@ -33,6 +34,7 @@ importlib-resources==5.9.0
 iniconfig==1.1.1
 jmespath==1.0.1
 kiwisolver==1.4.4
+limits==2.8.0
 Mako==1.2.1
 MarkupSafe==2.1.1
 matplotlib==3.6.2
@@ -67,6 +69,7 @@ Rtree==1.0.1
 s3transfer==0.6.0
 Shapely==1.8.5.post1
 six==1.16.0
+slowapi==0.1.7
 sniffio==1.2.0
 SQLAlchemy==1.4.40
 SQLAlchemy-Utils==0.39.0
@@ -75,4 +78,5 @@ tomli==2.0.1
 typing_extensions==4.3.0
 urllib3==1.26.12
 uvicorn==0.18.3
+wrapt==1.14.1
 zipp==3.8.1

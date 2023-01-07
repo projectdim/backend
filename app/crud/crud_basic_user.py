@@ -36,7 +36,7 @@ def new_otp_request(
     guest_user = db.query(GuestUser).get(user_id)
 
     guest_user.last_request = datetime.now()
-    guest_user.total_otp_requests = guest_user.total_otp_requests + 1
+    guest_user.total_otp_requests = 1 if not guest_user.total_otp_requests else guest_user.total_otp_requests + 1
 
     db.commit()
     db.refresh(guest_user)

@@ -1,9 +1,11 @@
 from typing import Any
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from sqlalchemy.orm import Session
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.api.dependencies import get_db
 from app.utils import sms_sender as sms
@@ -16,10 +18,13 @@ from app.utils import geocoding
 
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post('/request-otp')
+@limiter.limit('{}/hour'.format(settings.OTP_HOUR_RATE_LIMIT))
 async def request_otp_code(
+        request: Request,
         phone_number: str,
         db: Session = Depends(get_db)
 ) -> Any:
@@ -31,15 +36,6 @@ async def request_otp_code(
         )
 
     guest_user = crud.get_or_create(db, phone_number)
-
-    if guest_user.last_request:
-        diff_minutes = (datetime.now() - guest_user.last_request).total_seconds() / 60.0
-        # TODO provide a constraint to tie the new code timer to.
-        if diff_minutes < 3.0:
-            raise HTTPException(
-                status_code=400,
-                detail="Code has been already sent, please wait."
-            )
 
     otp_status = sms.send_otp(
         phone_number=phone_number,
@@ -66,11 +62,10 @@ async def request_otp_code(
         "expires_at": (datetime.utcnow() + timedelta(minutes=settings.OTP_EXPIRE_MINUTES)).strftime('%Y-%m-%dT%H:%M:%SZ')
     }
 
-    # return JSONResponse(status_code=status.HTTP_200_OK, content="Code sent. Please check your phone.")
-
 
 @router.post('/request-location')
 async def request_location_info_with_otp(
+        request: Request,
         location_request: schemas.LocationRequestOtp,
         db: Session = Depends(get_db)
 ) -> Any:
