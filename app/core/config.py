@@ -49,6 +49,7 @@ class Settings(BaseSettings):
 
     EMAILS_ENABLED: bool = os.getenv('EMAILS_ENABLED', True)
     OTP_EXPIRE_MINUTES: int = os.getenv("OTP_EXPIRE_MINUTES", 15)
+    OTP_HOUR_RATE_LIMIT: int = os.getenv("OTP_HOUR_RATE_LIMIT", 5)
     AMAZON_APP_ID: str = os.getenv('AMAZON_APP_ID', "none")
     AWS_PROFILE: str = os.getenv("AWS_PROFILE", "dim")
 
